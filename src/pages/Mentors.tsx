@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   User, 
@@ -8,7 +7,6 @@ import {
   Mail, 
   Calendar, 
   MessageSquare,
-  Star, 
   GraduationCap, 
   Award, 
   ChevronDown, 
@@ -42,8 +40,6 @@ const mentors = [
     hIndex: 42,
     availability: "Limited (1-2 mentees)",
     mentoringSince: "2008",
-    rating: 4.9,
-    reviews: 24,
     mentorshipAreas: ["PhD Application Advice", "Research Direction", "Career Guidance"],
     acceptingStudents: true,
     fields: ["Computer Science", "Artificial Intelligence"],
@@ -61,8 +57,6 @@ const mentors = [
     hIndex: 28,
     availability: "Open (multiple mentees)",
     mentoringSince: "2012",
-    rating: 4.7,
-    reviews: 18,
     mentorshipAreas: ["Research Methods", "Publication Strategy", "Interdisciplinary Collaboration"],
     acceptingStudents: true,
     fields: ["Biology", "Computational Science", "Medicine"],
@@ -80,8 +74,6 @@ const mentors = [
     hIndex: 50,
     availability: "Limited (1-2 mentees)",
     mentoringSince: "2005",
-    rating: 5.0,
-    reviews: 31,
     mentorshipAreas: ["Academic Career Planning", "Grant Writing", "Advanced Research Techniques"],
     acceptingStudents: false,
     fields: ["Physics", "Computer Science", "Mathematics"],
@@ -99,8 +91,6 @@ const mentors = [
     hIndex: 35,
     availability: "Open (multiple mentees)",
     mentoringSince: "2010",
-    rating: 4.8,
-    reviews: 22,
     mentorshipAreas: ["Science Communication", "Policy Engagement", "Interdisciplinary Research"],
     acceptingStudents: true,
     fields: ["Environmental Science", "Climate Science", "Public Policy"],
@@ -118,8 +108,6 @@ const mentors = [
     hIndex: 22,
     availability: "Limited (1-2 mentees)",
     mentoringSince: "2015",
-    rating: 4.6,
-    reviews: 15,
     mentorshipAreas: ["Experimental Design", "Statistical Analysis", "Publication Strategy"],
     acceptingStudents: true,
     fields: ["Psychology", "Neuroscience", "Statistics"],
@@ -396,18 +384,6 @@ export default function Mentors() {
                             <AvatarFallback>{mentor.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           
-                          <div className="flex items-center">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`h-4 w-4 ${i < Math.floor(mentor.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
-                              />
-                            ))}
-                            <span className="ml-1 text-sm font-medium">{mentor.rating}</span>
-                          </div>
-                          
-                          <div className="text-xs text-gray-500">{mentor.reviews} reviews</div>
-                          
                           <Badge variant={mentor.acceptingStudents ? "default" : "secondary"} className="mt-2">
                             {mentor.acceptingStudents ? "Accepting Students" : "Not Available"}
                           </Badge>
@@ -534,18 +510,6 @@ export default function Mentors() {
                             <AvatarImage src={mentor.avatar} alt={mentor.name} />
                             <AvatarFallback>{mentor.name.charAt(0)}</AvatarFallback>
                           </Avatar>
-                          
-                          <div className="flex items-center">
-                            {Array.from({ length: 5 }).map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`h-4 w-4 ${i < Math.floor(mentor.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
-                              />
-                            ))}
-                            <span className="ml-1 text-sm font-medium">{mentor.rating}</span>
-                          </div>
-                          
-                          <div className="text-xs text-gray-500">{mentor.reviews} reviews</div>
                           
                           <Badge className="mt-2">
                             Accepting Students

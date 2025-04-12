@@ -9,12 +9,21 @@ import {
   Filter,
   ChevronRight, 
   ChevronDown, 
-  ExternalLink 
+  ExternalLink,
+  Bell
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 
 // Mock event data
 const events = [
@@ -82,6 +91,37 @@ const events = [
     topics: ["AI Ethics", "Responsible AI", "Fairness in ML"],
     isFeatured: false,
     isVirtual: true
+  }
+];
+
+// New upcoming events data
+const upcomingEventsList = [
+  {
+    id: "6",
+    title: "Future of AI in Healthcare Summit",
+    date: "2025-05-23",
+    location: "San Francisco, CA",
+    organizer: "Stanford Medicine",
+    description: "A one-day summit featuring talks from leading AI researchers and healthcare professionals on applications of artificial intelligence in medical diagnosis and treatment.",
+    registerUrl: "https://example.com/ai-health-summit"
+  },
+  {
+    id: "7",
+    title: "Genomics Data Analysis Workshop",
+    date: "2025-06-15",
+    location: "Boston, MA",
+    organizer: "Harvard Genomics Center",
+    description: "Hands-on workshop providing training in state-of-the-art genomic data analysis techniques and tools.",
+    registerUrl: "https://example.com/genomics-workshop"
+  },
+  {
+    id: "8",
+    title: "Quantum Machine Learning Conference",
+    date: "2025-07-08",
+    location: "Virtual Event",
+    organizer: "Quantum Computing Institute",
+    description: "Explore the intersection of quantum computing and machine learning in this three-day virtual conference.",
+    registerUrl: "https://example.com/quantum-ml"
   }
 ];
 
@@ -177,6 +217,16 @@ export default function Events() {
     // Different month event
     return `${startDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric'})} - ${endDate.toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}`;
   };
+  
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric'
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -185,6 +235,49 @@ export default function Events() {
         <p className="text-gray-600">
           Discover conferences, workshops, and other events in your research area.
         </p>
+      </div>
+      
+      {/* Featured Upcoming Events Section */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold text-research-blue mb-4 flex items-center">
+          <Bell className="mr-2 h-5 w-5 text-research-purple" />
+          Upcoming Events You Might Be Interested In
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {upcomingEventsList.map(event => (
+            <Card key={event.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">{event.title}</CardTitle>
+                <CardDescription className="flex items-center gap-1 mt-1">
+                  <Calendar className="h-4 w-4" />
+                  {formatDate(event.date)}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
+                  <MapPin className="h-4 w-4" />
+                  {event.location}
+                </div>
+                <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
+                  <Users className="h-4 w-4" />
+                  Organized by: {event.organizer}
+                </div>
+                <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>
+              </CardContent>
+              <CardFooter className="pt-1">
+                <a
+                  href={event.registerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-research-purple hover:text-research-light-purple text-sm font-medium flex items-center"
+                >
+                  Register Now
+                  <ExternalLink className="ml-1 h-3 w-3" />
+                </a>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       </div>
       
       <div className="flex flex-col md:flex-row gap-6">

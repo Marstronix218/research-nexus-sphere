@@ -11,7 +11,8 @@ import {
   Calendar, 
   Tag, 
   Search, 
-  Filter
+  Filter,
+  UserCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +30,8 @@ const feedItems = [
       id: "auth1",
       name: "Dr. Son Heung-min Jr.",
       avatar: "/placeholder.svg",
-      institution: "Stanford University"
+      institution: "Stanford University",
+      isFollowing: true
     },
     date: "2024-04-10T14:30:00Z",
     content: "I'm excited to announce the publication of our latest research on applying deep learning methods to improve climate prediction models. This work represents a collaboration across multiple institutions.",
@@ -47,7 +49,8 @@ const feedItems = [
       id: "auth2",
       name: "Dr. Jung Min",
       avatar: "/placeholder.svg",
-      institution: "MIT"
+      institution: "MIT",
+      isFollowing: false
     },
     date: "2024-04-09T10:15:00Z",
     content: "The 2024 International Conference on AI Ethics is now accepting submissions. We're looking for papers addressing responsible AI development, fairness in machine learning, and policy recommendations.",
@@ -65,7 +68,8 @@ const feedItems = [
       id: "auth3",
       name: "Dr. Uesaka Shinnosuke",
       avatar: "/placeholder.svg",
-      institution: "Caltech"
+      institution: "Caltech",
+      isFollowing: true
     },
     date: "2024-04-08T16:45:00Z",
     content: "Our lab is initiating a new project on quantum algorithms for optimization problems. We're looking for collaborators with expertise in quantum computing theory or implementation. If interested, please reach out!",
@@ -83,7 +87,8 @@ const feedItems = [
       id: "auth4",
       name: "Dr. Hyunwoo Lee",
       avatar: "/placeholder.svg",
-      institution: "Harvard Medical School"
+      institution: "Harvard Medical School",
+      isFollowing: true
     },
     date: "2024-04-07T09:20:00Z",
     content: "I'll be hosting a virtual workshop on advanced research methods in bioinformatics next month. Topics will include next-generation sequencing analysis, protein structure prediction, and network biology approaches.",
@@ -101,7 +106,8 @@ const feedItems = [
       id: "auth5",
       name: "Dr. Moonsup Kip",
       avatar: "/placeholder.svg",
-      institution: "University of California, Berkeley"
+      institution: "University of California, Berkeley",
+      isFollowing: false
     },
     date: "2024-04-06T11:10:00Z",
     content: "Thrilled to announce that our research team has been awarded a $3.5 million grant to advance our work on novel materials for sustainable energy storage. We're looking forward to making significant progress in this critical area.",
@@ -122,6 +128,7 @@ export default function Feeds() {
   const [selectedFeedTypes, setSelectedFeedTypes] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showOnlyFollowing, setShowOnlyFollowing] = useState(false);
   const [bookmarkedItems, setBookmarkedItems] = useState<string[]>(
     feedItems.filter(item => item.isBookmarked).map(item => item.id)
   );
@@ -154,6 +161,7 @@ export default function Feeds() {
     setSelectedFeedTypes([]);
     setSelectedTags([]);
     setSearchTerm("");
+    setShowOnlyFollowing(false);
   };
   
   const filterFeedItems = (items: typeof feedItems) => {
@@ -168,8 +176,10 @@ export default function Feeds() {
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.author.name.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesFollowing = !showOnlyFollowing || item.author.isFollowing;
         
-      return matchesType && matchesTags && matchesSearch;
+      return matchesType && matchesTags && matchesSearch && matchesFollowing;
     });
   };
   
@@ -217,6 +227,23 @@ export default function Feeds() {
                 className="w-full p-2 border rounded-md pl-10 focus:outline-none focus:ring-2 focus:ring-research-purple"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            </div>
+            
+            <div className="mb-4">
+              <div className="flex items-center mb-2">
+                <Checkbox 
+                  id="following-only"
+                  checked={showOnlyFollowing}
+                  onCheckedChange={() => setShowOnlyFollowing(!showOnlyFollowing)}
+                />
+                <label 
+                  htmlFor="following-only"
+                  className="ml-2 text-sm cursor-pointer hover:text-research-purple flex items-center"
+                >
+                  <UserCheck className="h-4 w-4 mr-1 text-research-purple" />
+                  Show only accounts I follow
+                </label>
+              </div>
             </div>
             
             <div className="mb-6">
@@ -274,7 +301,7 @@ export default function Feeds() {
               size="sm" 
               onClick={resetFilters}
               className="w-full"
-              disabled={selectedFeedTypes.length === 0 && selectedTags.length === 0 && searchTerm === ""}
+              disabled={selectedFeedTypes.length === 0 && selectedTags.length === 0 && searchTerm === "" && !showOnlyFollowing}
             >
               Reset Filters
             </Button>
@@ -323,8 +350,11 @@ export default function Feeds() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <h3 className="font-semibold text-gray-800">
+                              <h3 className="font-semibold text-gray-800 flex items-center">
                                 {item.author.name}
+                                {item.author.isFollowing && (
+                                  <UserCheck className="h-4 w-4 ml-1 text-research-purple" title="You follow this account" />
+                                )}
                               </h3>
                               <p className="text-sm text-gray-500">
                                 {item.author.institution} · {formatDate(item.date)}
@@ -419,8 +449,11 @@ export default function Feeds() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <h3 className="font-semibold text-gray-800">
+                              <h3 className="font-semibold text-gray-800 flex items-center">
                                 {item.author.name}
+                                {item.author.isFollowing && (
+                                  <UserCheck className="h-4 w-4 ml-1 text-research-purple" title="You follow this account" />
+                                )}
                               </h3>
                               <p className="text-sm text-gray-500">
                                 {item.author.institution} · {formatDate(item.date)}

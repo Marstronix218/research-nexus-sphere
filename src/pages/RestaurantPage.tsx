@@ -32,6 +32,20 @@ const RestaurantPage = () => {
           description: "We developed a multi-stage CNN architecture for accurate tumor detection in MRI scans.",
           date: "April 2025",
           likes: 27
+        },
+        {
+          id: "6",
+          title: "Automated Brain Lesion Segmentation",
+          description: "A novel approach to automated segmentation of brain lesions using deep learning techniques.",
+          date: "March 2025",
+          likes: 19
+        },
+        {
+          id: "7",
+          title: "Transfer Learning for Small Neuroimaging Datasets",
+          description: "Exploring transfer learning approaches to improve performance on limited neuroimaging data.",
+          date: "February 2025",
+          likes: 22
         }
       ],
       badges: ["3-star group"],
@@ -64,6 +78,13 @@ const RestaurantPage = () => {
           description: "A comprehensive review of the latest methods in single-cell RNA sequencing data analysis.",
           date: "March 2025",
           likes: 15
+        },
+        {
+          id: "8",
+          title: "Computational Methods in Proteomics",
+          description: "Overview of computational approaches for analyzing large-scale proteomics datasets.",
+          date: "January 2025",
+          likes: 12
         }
       ],
       badges: [],
@@ -99,6 +120,20 @@ const RestaurantPage = () => {
           description: "We developed techniques to efficiently fine-tune large language models for specialized scientific terminology and reasoning.",
           date: "April 2025",
           likes: 42
+        },
+        {
+          id: "9",
+          title: "Cross-Modal Transformers for Scientific Literature",
+          description: "Leveraging images and text together to enhance scientific document understanding.",
+          date: "March 2025",
+          likes: 36
+        },
+        {
+          id: "10",
+          title: "Knowledge Graph Construction from Scientific Text",
+          description: "Automated extraction of structured knowledge from unstructured scientific publications.",
+          date: "February 2025",
+          likes: 29
         }
       ],
       badges: ["Michelin badge", "3-star group"],
@@ -164,6 +199,13 @@ const RestaurantPage = () => {
           description: "Integration of transcriptomics, proteomics, and metabolomics data for comprehensive cancer biomarker identification.",
           date: "March 2025",
           likes: 24
+        },
+        {
+          id: "11",
+          title: "Gene Regulatory Network Inference",
+          description: "Novel statistical approaches for inferring gene regulatory networks from time-series expression data.",
+          date: "January 2025",
+          likes: 18
         }
       ],
       badges: ["3-star group"],

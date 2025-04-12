@@ -1,9 +1,8 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Map, Network, Newspaper, Calendar, Users, Rss, Utensils } from "lucide-react";
+import { Menu, X, Map, Network, Newspaper, Calendar, Users, Rss, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -86,14 +85,6 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative w-64">
-              <Input 
-                type="text" 
-                placeholder="Search researchers..." 
-                className="pl-10 pr-4 py-2 w-full" 
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            </div>
             <Button variant="default" className="bg-research-purple hover:bg-research-light-purple">
               Sign In
             </Button>
@@ -115,15 +106,6 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b">
           <div className="container mx-auto px-4 py-4 space-y-4">
-            <div className="relative">
-              <Input 
-                type="text" 
-                placeholder="Search researchers..." 
-                className="pl-10 pr-4 py-2 w-full" 
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            </div>
-            
             <nav className="flex flex-col space-y-4">
               <Link 
                 to="/" 
