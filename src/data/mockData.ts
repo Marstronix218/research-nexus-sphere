@@ -42,10 +42,10 @@ export const researchInterests = [
 export const researchers: Researcher[] = [
   {
     id: "1",
-    name: "Dr. Emma Johnson",
+    name: "Jeongmin Seo",
     avatar: "https://randomuser.me/api/portraits/women/1.jpg",
     institution: "Stanford University",
-    department: "Computer Science",
+    department: "Neurocience",
     location: "Stanford, California, USA", // Add location data
     interests: ["Artificial Intelligence", "Machine Learning", "Ethics in AI"],
     publications: 78,
@@ -57,7 +57,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "2",
-    name: "Prof. Michael Chen",
+    name: "Kim Minsoo",
     avatar: "https://randomuser.me/api/portraits/men/2.jpg",
     institution: "MIT",
     department: "Electrical Engineering",
@@ -72,7 +72,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "3",
-    name: "Dr. Sarah Martinez",
+    name: "Jang Wonyoung",
     avatar: "https://randomuser.me/api/portraits/women/3.jpg",
     institution: "UC Berkeley",
     department: "Computational Biology",
@@ -87,7 +87,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "4",
-    name: "Prof. David Kim",
+    name: "Prof. David Kang",
     avatar: "https://randomuser.me/api/portraits/men/4.jpg",
     institution: "Oxford University",
     department: "Physics",
@@ -102,7 +102,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "5",
-    name: "Dr. Lisa Wong",
+    name: "Dr. Kim Chaewon",
     avatar: "https://randomuser.me/api/portraits/women/5.jpg",
     institution: "Carnegie Mellon University",
     department: "Robotics",
@@ -117,7 +117,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "6",
-    name: "Prof. James Rodriguez",
+    name: "Prof. Kim Taehyung",
     avatar: "https://randomuser.me/api/portraits/men/6.jpg",
     institution: "ETH Zurich",
     department: "Computer Science",
@@ -132,7 +132,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "7",
-    name: "Dr. Alexandra Novak",
+    name: "Dr. Kim Minjeong",
     avatar: "https://randomuser.me/api/portraits/women/7.jpg",
     institution: "California Institute of Technology",
     department: "Neuroscience",
@@ -147,7 +147,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "8",
-    name: "Prof. Robert Williams",
+    name: "Prof. Shinnosuke Uesaka",
     avatar: "https://randomuser.me/api/portraits/men/8.jpg",
     institution: "University of Tokyo",
     department: "Climate Science",
@@ -162,7 +162,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "9",
-    name: "Dr. Michelle Lee",
+    name: "Dr. Sujin Lee",
     avatar: "https://randomuser.me/api/portraits/women/9.jpg",
     institution: "Georgia Tech",
     department: "Cybersecurity",
@@ -177,7 +177,7 @@ export const researchers: Researcher[] = [
   },
   {
     id: "10",
-    name: "Prof. Jonathan Clark",
+    name: "Prof. Son Heung-min",
     avatar: "https://randomuser.me/api/portraits/men/10.jpg",
     institution: "Harvard University",
     department: "Astronomy",

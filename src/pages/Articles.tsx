@@ -25,7 +25,7 @@ const articles = [
   {
     id: "1",
     title: "Advances in Neural Network Applications for Climate Model Prediction",
-    authors: ["Jane Smith", "Robert Chen", "Maria Garcia"],
+    authors: ["Lim Nayeon", "Kim Chaeyoung", "Park Jihyo"],
     journal: "Nature Climate Change",
     publicationDate: "2024-03-15",
     abstract: "This paper explores the application of deep neural networks to improve climate model predictions, achieving a 23% improvement in accuracy over traditional methods.",
@@ -36,7 +36,7 @@ const articles = [
   {
     id: "2",
     title: "Quantum Computing Approaches to Protein Folding Problems",
-    authors: ["David Johnson", "Sarah Williams", "Michael Brown"],
+    authors: ["An Yujin", "Kwon Eunbi", "Nazym Zhiyengalieva"],
     journal: "Science",
     publicationDate: "2024-02-22",
     abstract: "We present a novel quantum algorithm that significantly reduces the computational time required for protein folding simulations.",
@@ -47,7 +47,7 @@ const articles = [
   {
     id: "3",
     title: "Understanding Social Network Dynamics Through Graph Neural Networks",
-    authors: ["Lisa Zhang", "Thomas White", "Amanda Rodriguez"],
+    authors: ["Lee Kangeun", "Cristiano Ronaldo", "Amanda Rodriguez"],
     journal: "Proceedings of the ACM on Human-Computer Interaction",
     publicationDate: "2024-01-10",
     abstract: "This study applies graph neural networks to model information diffusion in social networks, providing insights into virality patterns.",
@@ -58,7 +58,7 @@ const articles = [
   {
     id: "4",
     title: "Sustainable Materials for Next-Generation Battery Technology",
-    authors: ["Kevin Lee", "Emily Davis", "James Wilson"],
+    authors: ["Kevin Lee", "Darren Watkins Jr.", "Park Jisung"],
     journal: "Advanced Energy Materials",
     publicationDate: "2023-12-05",
     abstract: "We review recent advances in sustainable materials for high-capacity batteries, with a focus on reducing environmental impact while maintaining performance.",
@@ -69,7 +69,7 @@ const articles = [
   {
     id: "5",
     title: "Ethical Considerations in Generative AI for Healthcare Applications",
-    authors: ["Rebecca Martinez", "Jonathan Taylor", "Sophia Kim"],
+    authors: ["Rebecca Martinez", "Steven Yang", "Sophia Kim"],
     journal: "Journal of Medical Ethics",
     publicationDate: "2023-11-18",
     abstract: "This paper discusses the ethical implications of deploying generative AI systems in clinical decision support and patient care contexts.",
