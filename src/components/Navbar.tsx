@@ -19,8 +19,8 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-research-green to-research-black flex items-center justify-center">
-                <span className="text-black font-bold text-sm">K-BIOX</span>
+              <div className="w-20 h-8 rounded-full bg-gradient-to-br from-research-green to-research-black flex items-center justify-center">
+                <span className="text-black font-bold text-lg">K-BIOX</span>
               </div>
             </Link>
           </div>
