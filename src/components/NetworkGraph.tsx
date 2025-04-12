@@ -1,4 +1,3 @@
-
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
@@ -81,10 +80,6 @@ function NodeObject({
           anchorX="center"
           anchorY="middle"
         >
-          <mesh>
-            <planeGeometry args={[node.name.length * 0.3, 1]} />
-            <meshBasicMaterial color="#000000" opacity={0.8} transparent />
-          </mesh>
           {node.name}
         </Text>
       )}
@@ -102,20 +97,25 @@ function LinkObject({
   end: [number, number, number], 
   isHighlighted: boolean 
 }) {
-  // Create points for the line
-  const points = [
-    new THREE.Vector3(...start),
-    new THREE.Vector3(...end)
-  ];
+  // Create a proper Three.js line using primitive
+  const points = [];
+  points.push(new THREE.Vector3(...start));
+  points.push(new THREE.Vector3(...end));
   
   const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-  const lineMaterial = new THREE.LineBasicMaterial({ 
-    color: isHighlighted ? "#9B59B6" : "#3498DB",
-    opacity: isHighlighted ? 1 : 0.2,
-    transparent: true
-  });
+  const color = isHighlighted ? "#9B59B6" : "#3498DB";
+  const opacity = isHighlighted ? 1 : 0.2;
   
-  return <line geometry={lineGeometry} material={lineMaterial} />;
+  return (
+    <primitive object={new THREE.Line(
+      lineGeometry,
+      new THREE.LineBasicMaterial({ 
+        color: color,
+        opacity: opacity,
+        transparent: true
+      })
+    )} />
+  );
 }
 
 // Scene component
