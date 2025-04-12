@@ -41,7 +41,7 @@ function NodeObject({
   
   const baseColor = new THREE.Color("#3498DB");
   const hoverColor = new THREE.Color("#9B59B6");
-  const selectedColor = new THREE.Color("#E74C3C);
+  const selectedColor = new THREE.Color("#E74C3C");
   
   useFrame(() => {
     if (!mesh.current) return;
