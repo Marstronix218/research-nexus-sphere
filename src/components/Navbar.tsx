@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Map, Network, Newspaper, Calendar, Users, Rss } from "lucide-react";
+import { Search, Menu, X, Map, Network, Newspaper, Calendar, Users, Rss, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -75,6 +75,13 @@ export default function Navbar() {
             >
               <Users className="h-4 w-4" />
               Mentors
+            </Link>
+            <Link 
+              to="/restaurants" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/restaurants') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Utensils className="h-4 w-4" />
+              Research Restaurants
             </Link>
           </nav>
 
@@ -173,6 +180,14 @@ export default function Navbar() {
               >
                 <Users className="h-4 w-4" />
                 Mentors
+              </Link>
+              <Link 
+                to="/restaurants" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/restaurants') ? 'text-research-purple' : 'text-gray-700'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Utensils className="h-4 w-4" />
+                Research Restaurants
               </Link>
               <Link 
                 to="/about" 
