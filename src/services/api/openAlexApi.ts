@@ -2,38 +2,43 @@
 /**
  * Service for interacting with the OpenAlex API
  */
-import { Researcher } from "@/data/mockData";
+
+import { ApiResearcher } from '../citationNetworkService';
 
 interface OpenAlexAuthor {
   id: string;
   display_name: string;
-  orcid: string | null;
+  orcid?: string;
   works_count: number;
   cited_by_count: number;
-  institutions: Array<{
+  institutions?: Array<{
     id: string;
     display_name: string;
-    country_code: string;
-    type: string;
+    country_code?: string;
   }>;
 }
 
 interface OpenAlexWork {
   id: string;
-  doi: string | null;
   title: string;
   publication_year: number;
+  doi?: string;
   cited_by_count: number;
   authorships: Array<{
     author: {
       id: string;
       display_name: string;
     };
-    institutions: Array<{
+    institutions?: Array<{
       id: string;
       display_name: string;
     }>;
   }>;
+  primary_location?: {
+    source?: {
+      display_name: string;
+    };
+  };
 }
 
 export async function searchAuthorsByName(name: string): Promise<OpenAlexAuthor[]> {
@@ -52,30 +57,25 @@ export async function searchAuthorsByName(name: string): Promise<OpenAlexAuthor[
   }
 }
 
-export async function getAuthorDetails(authorId: string): Promise<Partial<Researcher> | null> {
+export async function getAuthorDetails(authorId: string): Promise<ApiResearcher | null> {
   try {
-    // OpenAlex requires the full ID with the prefix
-    const formattedId = authorId.startsWith('https://openalex.org/') ? authorId : `https://openalex.org/${authorId}`;
-    const response = await fetch(`${formattedId}`);
+    // Remove 'https://openalex.org/' prefix if present
+    const cleanId = authorId.replace('https://openalex.org/', '');
+    const response = await fetch(`https://api.openalex.org/${cleanId}`);
     
     if (!response.ok) {
       throw new Error(`OpenAlex API error: ${response.status}`);
     }
     
-    const data = await response.json();
+    const author = await response.json();
     
-    // Extract research interests from top concepts
-    const interests = data.x_concepts?.slice(0, 5).map((concept: any) => concept.display_name) || [];
-    
-    // Convert to our application's Researcher format
     return {
-      id: data.id,
-      name: data.display_name,
-      institution: data.last_known_institution?.display_name || "",
-      interests,
-      paperCount: data.works_count,
-      citationCount: data.cited_by_count,
-      hIndex: data.summary_stats?.h_index || 0
+      id: author.id,
+      name: author.display_name,
+      institution: author.institutions?.[0]?.display_name || "",
+      interests: [],
+      paperCount: author.works_count,
+      source: 'openalex'
     };
   } catch (error) {
     console.error("Error fetching OpenAlex author details:", error);
@@ -85,9 +85,9 @@ export async function getAuthorDetails(authorId: string): Promise<Partial<Resear
 
 export async function getAuthorWorks(authorId: string): Promise<OpenAlexWork[]> {
   try {
-    // OpenAlex requires the full ID with the prefix
-    const formattedId = authorId.startsWith('https://openalex.org/') ? authorId : `https://openalex.org/${authorId}`;
-    const response = await fetch(`https://api.openalex.org/works?filter=author.id:${encodeURIComponent(formattedId)}`);
+    // Remove 'https://openalex.org/' prefix if present
+    const cleanId = authorId.replace('https://openalex.org/', '');
+    const response = await fetch(`https://api.openalex.org/works?filter=author.id:${cleanId}&per-page=50`);
     
     if (!response.ok) {
       throw new Error(`OpenAlex API error: ${response.status}`);
@@ -103,9 +103,9 @@ export async function getAuthorWorks(authorId: string): Promise<OpenAlexWork[]> 
 
 export async function getWorkCitations(workId: string): Promise<OpenAlexWork[]> {
   try {
-    // OpenAlex requires the full ID with the prefix
-    const formattedId = workId.startsWith('https://openalex.org/') ? workId : `https://openalex.org/${workId}`;
-    const response = await fetch(`https://api.openalex.org/works?filter=cites:${encodeURIComponent(formattedId)}`);
+    // Remove 'https://openalex.org/' prefix if present
+    const cleanId = workId.replace('https://openalex.org/', '');
+    const response = await fetch(`https://api.openalex.org/works?filter=cites:${cleanId}&per-page=50`);
     
     if (!response.ok) {
       throw new Error(`OpenAlex API error: ${response.status}`);
@@ -115,6 +115,22 @@ export async function getWorkCitations(workId: string): Promise<OpenAlexWork[]> 
     return data.results || [];
   } catch (error) {
     console.error("Error fetching OpenAlex work citations:", error);
+    return [];
+  }
+}
+
+export async function searchWorksByTitle(title: string): Promise<OpenAlexWork[]> {
+  try {
+    const response = await fetch(`https://api.openalex.org/works?filter=title.search:${encodeURIComponent(title)}`);
+    
+    if (!response.ok) {
+      throw new Error(`OpenAlex API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data.results || [];
+  } catch (error) {
+    console.error("Error searching OpenAlex works:", error);
     return [];
   }
 }

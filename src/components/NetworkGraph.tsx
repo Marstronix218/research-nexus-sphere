@@ -1,4 +1,3 @@
-
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
@@ -18,7 +17,6 @@ import {
 } from "@/services/citationNetworkService";
 import { toast } from "@/components/ui/use-toast";
 
-// Node component for the 3D graph
 function NodeObject({ 
   node, 
   position, 
@@ -38,12 +36,10 @@ function NodeObject({
 }) {
   const mesh = useRef<THREE.Mesh>(null);
   
-  // Colors
   const baseColor = new THREE.Color("#3498DB");
   const hoverColor = new THREE.Color("#9B59B6");
   const selectedColor = new THREE.Color("#E74C3C");
   
-  // Animate hover/select
   useFrame(() => {
     if (!mesh.current) return;
     
@@ -57,12 +53,15 @@ function NodeObject({
       material.color.lerp(baseColor, 0.1);
     }
     
-    // Subtle animation
     mesh.current.rotation.y += 0.01;
   });
   
+  const nodeType = (node as any).type || 'default';
+  const baseSize = nodeType === 'researcher' ? 0.5 : 0.3;
   const scaleFactor = isSelected ? 1.2 : isHovered ? 1.1 : 1;
-  const finalScale = scale * scaleFactor * (node.val || 1);
+  const nodeValue = node.val || 1;
+  const cappedNodeValue = Math.min(nodeValue, 2);
+  const finalScale = scale * scaleFactor * baseSize * Math.sqrt(cappedNodeValue);
   
   return (
     <group position={position}>
@@ -84,8 +83,8 @@ function NodeObject({
       
       {(isHovered || isSelected) && (
         <Text
-          position={[0, finalScale + 0.5, 0]}
-          fontSize={0.5}
+          position={[0, finalScale + 0.3, 0]}
+          fontSize={0.3}
           color="#ffffff"
           anchorX="center"
           anchorY="middle"
@@ -97,7 +96,6 @@ function NodeObject({
   );
 }
 
-// Link component
 function LinkObject({ 
   start, 
   end, 
@@ -107,7 +105,6 @@ function LinkObject({
   end: [number, number, number], 
   isHighlighted: boolean 
 }) {
-  // Create a proper Three.js line using primitive
   const points = [];
   points.push(new THREE.Vector3(...start));
   points.push(new THREE.Vector3(...end));
@@ -128,7 +125,6 @@ function LinkObject({
   );
 }
 
-// Scene component
 function NetworkScene({ 
   data, 
   onSelectNode, 
@@ -143,12 +139,10 @@ function NetworkScene({
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const { camera } = useThree();
   
-  // Position nodes in a sphere
   const nodePositions = useRef<Record<string, [number, number, number]>>({});
   
-  // Initialize positions
   useEffect(() => {
-    const r = 10 * scale; // radius
+    const r = 15 * scale;
     data.nodes.forEach((node, i) => {
       const phi = Math.acos(-1 + (2 * i) / data.nodes.length);
       const theta = Math.sqrt(data.nodes.length * Math.PI) * phi;
@@ -161,9 +155,8 @@ function NetworkScene({
     });
   }, [data.nodes, scale]);
   
-  // Reset camera
   const resetCamera = () => {
-    camera.position.set(15 * scale, 10 * scale, 15 * scale);
+    camera.position.set(20 * scale, 15 * scale, 20 * scale);
     camera.lookAt(0, 0, 0);
   };
   
@@ -176,7 +169,6 @@ function NetworkScene({
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 10]} intensity={1} />
       
-      {/* Render links */}
       {data.links.map((link, i) => {
         const startPos = nodePositions.current[link.source];
         const endPos = nodePositions.current[link.target];
@@ -198,7 +190,6 @@ function NetworkScene({
         );
       })}
       
-      {/* Render nodes */}
       {data.nodes.map((node) => {
         const position = nodePositions.current[node.id];
         if (!position) return null;
@@ -222,7 +213,6 @@ function NetworkScene({
   );
 }
 
-// Main component
 export default function NetworkGraph() {
   const [networkData, setNetworkData] = useState(createNetworkData());
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
@@ -232,7 +222,6 @@ export default function NetworkGraph() {
   const [isLoading, setIsLoading] = useState(false);
   const [networkType, setNetworkType] = useState<'citation' | 'coauthor'>('citation');
   
-  // Handle node selection
   const handleSelectNode = (id: string) => {
     setSelectedNodes(prev => 
       prev.includes(id) 
@@ -241,7 +230,6 @@ export default function NetworkGraph() {
     );
   };
   
-  // Search for researchers
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setSearchResults([]);
@@ -251,13 +239,11 @@ export default function NetworkGraph() {
     const fetchResults = async () => {
       try {
         setIsLoading(true);
-        // First try to get from the real APIs
         const apiResults = await searchResearchers(searchTerm);
         
         if (apiResults.length > 0) {
           setSearchResults(apiResults);
         } else {
-          // Fall back to mock data if no results from API
           const mockResults = researchers.filter(
             r => r.name.toLowerCase().includes(searchTerm.toLowerCase())
           );
@@ -265,7 +251,6 @@ export default function NetworkGraph() {
         }
       } catch (error) {
         console.error("Error searching researchers:", error);
-        // Fall back to mock data on error
         const mockResults = researchers.filter(
           r => r.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -275,12 +260,10 @@ export default function NetworkGraph() {
       }
     };
     
-    // Debounce to avoid too many API calls
     const timeoutId = setTimeout(fetchResults, 500);
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
   
-  // Highlight search result
   const handleSelectSearchResult = async (id: string, source?: string) => {
     try {
       setIsLoading(true);
@@ -288,7 +271,6 @@ export default function NetworkGraph() {
       setSearchTerm("");
       setSearchResults([]);
       
-      // Fetch and create the network
       let newNetworkData;
       
       if (networkType === 'citation') {
@@ -305,7 +287,6 @@ export default function NetworkGraph() {
         newNetworkData = await createCoAuthorNetwork(id, source);
       }
       
-      // If we got data from the API, use it
       if (newNetworkData.nodes.length > 0) {
         setNetworkData(newNetworkData);
         toast({
@@ -313,7 +294,6 @@ export default function NetworkGraph() {
           description: `Loaded ${newNetworkData.nodes.length} nodes and ${newNetworkData.links.length} connections.`,
         });
       } else {
-        // Fall back to mock data
         toast({
           title: "Using sample data",
           description: "Could not retrieve enough data from APIs, showing sample network.",
@@ -334,7 +314,6 @@ export default function NetworkGraph() {
     }
   };
   
-  // Reset view
   const resetView = () => {
     setSelectedNodes([]);
     setScale(1);
@@ -352,7 +331,6 @@ export default function NetworkGraph() {
       
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/4 space-y-6">
-          {/* Search and controls */}
           <div className="bg-white rounded-lg shadow p-4">
             <h3 className="text-lg font-medium mb-4">Search Researchers</h3>
             
@@ -374,7 +352,7 @@ export default function NetworkGraph() {
                   <button
                     key={researcher.id}
                     className="w-full p-2 hover:bg-gray-50 text-left flex items-center"
-                    onClick={() => handleSelectSearchResult(researcher.id!, researcher.source)}
+                    onClick={() => handleSelectSearchResult(researcher.id!, (researcher as any).source)}
                     disabled={isLoading}
                   >
                     <img
@@ -437,25 +415,20 @@ export default function NetworkGraph() {
             </div>
           </div>
           
-          {/* Selected nodes info */}
           <div className="bg-white rounded-lg shadow p-4">
             <h3 className="text-lg font-medium mb-4">Selected Researchers</h3>
             
             {selectedNodes.length > 0 ? (
               <div className="space-y-3">
                 {selectedNodes.map(nodeId => {
-                  // First check if it's in the network data
                   const nodeInNetwork = networkData.nodes.find(n => n.id === nodeId);
-                  
-                  // Then check in mock researchers
-                  const researcher = nodeInNetwork?.type === "researcher" 
+                  const researcher = (nodeInNetwork as any)?.type === "researcher" 
                     ? researchers.find(r => r.id === nodeId) 
                     : null;
                   
                   if (!nodeInNetwork) return null;
                   
                   if (researcher) {
-                    // It's a researcher node
                     return (
                       <div key={nodeId} className="flex items-start p-2 bg-gray-50 rounded-lg">
                         <img
@@ -477,7 +450,6 @@ export default function NetworkGraph() {
                       </div>
                     );
                   } else {
-                    // It's a paper or other type of node
                     const citationNode = nodeInNetwork as CitationNode;
                     return (
                       <div key={nodeId} className="p-2 bg-gray-50 rounded-lg">
@@ -507,7 +479,6 @@ export default function NetworkGraph() {
           </div>
         </div>
         
-        {/* Network visualization */}
         <div className="md:w-3/4">
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="network-container h-[600px] relative">

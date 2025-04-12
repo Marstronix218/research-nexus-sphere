@@ -8,12 +8,14 @@ import * as crossrefApi from './api/crossrefApi';
 import * as openCitationsApi from './api/openCitationsApi';
 import { Node, Link, Researcher } from '@/data/mockData';
 
+// Extended types for citation network
 export interface CitationNode extends Node {
   title?: string;
   year?: number;
   doi?: string;
   authors?: string[];
   venue?: string;
+  type?: 'researcher' | 'paper';
 }
 
 export interface CitationLink extends Link {
@@ -26,15 +28,21 @@ export interface CitationNetworkData {
   links: CitationLink[];
 }
 
+// Extended types for researchers with source information
+export interface ApiResearcher extends Partial<Researcher> {
+  source?: string;
+  paperCount?: number;
+}
+
 // Search for researchers across multiple APIs
-export async function searchResearchers(name: string): Promise<Partial<Researcher>[]> {
+export async function searchResearchers(name: string): Promise<ApiResearcher[]> {
   try {
     // Search using Semantic Scholar API
     const semanticScholars = await semanticScholarApi.searchAuthorsByName(name);
     const openAlexAuthors = await openAlexApi.searchAuthorsByName(name);
     
     // Combine and deduplicate results
-    const researchers: Partial<Researcher>[] = [];
+    const researchers: ApiResearcher[] = [];
     
     // Add Semantic Scholar results
     for (const author of semanticScholars) {
@@ -68,7 +76,7 @@ export async function searchResearchers(name: string): Promise<Partial<Researche
 }
 
 // Get detailed researcher profile
-export async function getResearcherDetails(id: string, source: string = 'semanticscholar'): Promise<Partial<Researcher> | null> {
+export async function getResearcherDetails(id: string, source: string = 'semanticscholar'): Promise<ApiResearcher | null> {
   try {
     if (source === 'semanticscholar') {
       return await semanticScholarApi.getAuthorDetails(id);
@@ -325,7 +333,7 @@ export async function createCoAuthorNetwork(researcherId: string, source: string
         id: authorId,
         name: authorData.name,
         type: "researcher",
-        val: 1 + authorData.count * 0.5 // Size based on collaboration count
+        val: 1 + Math.min(authorData.count * 0.2, 1) // Size based on collaboration count but capped
       });
       
       // Add collaboration link
