@@ -1,12 +1,17 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Search, Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Search, Menu, X, Map, Network, Newspaper, Calendar, Users, Rss } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-sm border-b">
@@ -23,14 +28,54 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/researchers" className="text-sm font-medium text-gray-700 hover:text-research-purple transition-colors">
+            <Link 
+              to="/" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Map className="h-4 w-4" />
+              Map
+            </Link>
+            <Link 
+              to="/researchers" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/researchers') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Users className="h-4 w-4" />
               Researchers
             </Link>
-            <Link to="/network" className="text-sm font-medium text-gray-700 hover:text-research-purple transition-colors">
+            <Link 
+              to="/network" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/network') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Network className="h-4 w-4" />
               Network
             </Link>
-            <Link to="/about" className="text-sm font-medium text-gray-700 hover:text-research-purple transition-colors">
-              About
+            <Link 
+              to="/articles" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/articles') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Newspaper className="h-4 w-4" />
+              Articles
+            </Link>
+            <Link 
+              to="/events" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/events') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Calendar className="h-4 w-4" />
+              Events
+            </Link>
+            <Link 
+              to="/feeds" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/feeds') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Rss className="h-4 w-4" />
+              Feeds
+            </Link>
+            <Link 
+              to="/mentors" 
+              className={`text-sm font-medium flex items-center gap-1 ${isActive('/mentors') ? 'text-research-purple' : 'text-gray-700 hover:text-research-purple'} transition-colors`}
+            >
+              <Users className="h-4 w-4" />
+              Mentors
             </Link>
           </nav>
 
@@ -75,22 +120,64 @@ export default function Navbar() {
             
             <nav className="flex flex-col space-y-4">
               <Link 
-                to="/researchers" 
-                className="text-sm font-medium text-gray-700 hover:text-research-purple transition-colors"
+                to="/" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/') ? 'text-research-purple' : 'text-gray-700'}`}
                 onClick={() => setIsMenuOpen(false)}
               >
+                <Map className="h-4 w-4" />
+                Map
+              </Link>
+              <Link 
+                to="/researchers" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/researchers') ? 'text-research-purple' : 'text-gray-700'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Users className="h-4 w-4" />
                 Researchers
               </Link>
               <Link 
                 to="/network" 
-                className="text-sm font-medium text-gray-700 hover:text-research-purple transition-colors"
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/network') ? 'text-research-purple' : 'text-gray-700'}`}
                 onClick={() => setIsMenuOpen(false)}
               >
+                <Network className="h-4 w-4" />
                 Network
               </Link>
               <Link 
+                to="/articles" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/articles') ? 'text-research-purple' : 'text-gray-700'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Newspaper className="h-4 w-4" />
+                Articles
+              </Link>
+              <Link 
+                to="/events" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/events') ? 'text-research-purple' : 'text-gray-700'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Calendar className="h-4 w-4" />
+                Events
+              </Link>
+              <Link 
+                to="/feeds" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/feeds') ? 'text-research-purple' : 'text-gray-700'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Rss className="h-4 w-4" />
+                Feeds
+              </Link>
+              <Link 
+                to="/mentors" 
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/mentors') ? 'text-research-purple' : 'text-gray-700'}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Users className="h-4 w-4" />
+                Mentors
+              </Link>
+              <Link 
                 to="/about" 
-                className="text-sm font-medium text-gray-700 hover:text-research-purple transition-colors"
+                className={`text-sm font-medium flex items-center gap-2 ${isActive('/about') ? 'text-research-purple' : 'text-gray-700'}`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 About

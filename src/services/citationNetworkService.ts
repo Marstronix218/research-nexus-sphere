@@ -1,4 +1,3 @@
-
 /**
  * Service for creating citation networks using data from multiple APIs
  */
@@ -45,6 +44,46 @@ export interface CitationNetworkData {
 export interface ApiResearcher extends Partial<Researcher> {
   source?: string;
   paperCount?: number;
+}
+
+// Fix for the externalIds and url properties in the SemanticScholarPaper type
+interface SemanticScholarPaper {
+  paperId: string;
+  title: string;
+  abstract?: string;
+  authors: Array<{
+    authorId: string;
+    name: string;
+  }>;
+  year?: number;
+  referenceCount?: number;
+  citationCount?: number;
+  influentialCitationCount?: number;
+  isOpenAccess?: boolean;
+  fieldsOfStudy?: string[];
+  externalIds?: {
+    DOI?: string;
+    ArXiv?: string;
+    PMID?: string;
+    PMCID?: string;
+  };
+  url?: string;
+}
+
+// Fix for the url property in the OpenAlexWork type
+interface OpenAlexWork {
+  id: string;
+  doi?: string;
+  title: string;
+  publication_year?: number;
+  authorships?: Array<{
+    author: {
+      id: string;
+      display_name: string;
+    };
+  }>;
+  cited_by_count?: number;
+  url?: string;
 }
 
 // Search for researchers across multiple APIs
