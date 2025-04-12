@@ -29,7 +29,7 @@ const feedItems = [
     author: {
       id: "auth1",
       name: "Dr. Son Heung-min Jr.",
-      avatar: "/placeholder.svg",
+      avatar: "https://randomuser.me/api/portraits/men/26.jpg",
       institution: "Stanford University",
       isFollowing: true
     },
@@ -48,74 +48,131 @@ const feedItems = [
     author: {
       id: "auth2",
       name: "Dr. Jung Min",
-      avatar: "/placeholder.svg",
+      avatar: "https://randomuser.me/api/portraits/men/27.jpg",
       institution: "MIT",
-      isFollowing: false
+      isFollowing: true
     },
-    date: "2024-04-09T10:15:00Z",
-    content: "The 2024 International Conference on AI Ethics is now accepting submissions. We're looking for papers addressing responsible AI development, fairness in machine learning, and policy recommendations.",
+    date: "2024-04-09T09:15:00Z",
+    content: "The International Conference on AI Ethics is now accepting paper submissions. This year's theme focuses on 'Responsible AI in Healthcare and Education'. Submission deadline: June 15, 2024.",
     link: "https://example.com/conference/ai-ethics",
     tags: ["AI Ethics", "Conference", "Call for Papers"],
     likes: 28,
-    comments: 3,
+    comments: 5,
     isBookmarked: false
   },
   {
     id: "3",
-    type: "collaboration",
-    title: "Seeking Collaborators for Quantum Computing Project",
+    type: "event",
+    title: "Workshop: Advanced Techniques in Quantum Computing",
     author: {
       id: "auth3",
-      name: "Dr. Uesaka Shinnosuke",
-      avatar: "/placeholder.svg",
-      institution: "Caltech",
-      isFollowing: true
+      name: "Prof. Elena Martinez",
+      avatar: "https://randomuser.me/api/portraits/women/26.jpg",
+      institution: "MIT",
+      isFollowing: false
     },
     date: "2024-04-08T16:45:00Z",
-    content: "Our lab is initiating a new project on quantum algorithms for optimization problems. We're looking for collaborators with expertise in quantum computing theory or implementation. If interested, please reach out!",
-    link: null,
-    tags: ["Quantum Computing", "Collaboration", "Algorithms"],
-    likes: 19,
+    content: "Join us for a two-day workshop on advanced quantum computing techniques. The workshop will cover quantum algorithms, error correction, and practical implementation challenges.",
+    link: "https://example.com/workshop/quantum",
+    tags: ["Quantum Computing", "Workshop", "Research"],
+    likes: 35,
     comments: 12,
-    isBookmarked: false
+    isBookmarked: true
   },
   {
     id: "4",
-    type: "event",
-    title: "Upcoming Workshop: Advanced Research Methods in Bioinformatics",
+    type: "publication",
+    title: "New Findings in Neuroplasticity Research",
     author: {
       id: "auth4",
-      name: "Dr. Hyunwoo Lee",
-      avatar: "/placeholder.svg",
-      institution: "Harvard Medical School",
+      name: "Dr. Sarah Chen",
+      avatar: "https://randomuser.me/api/portraits/women/27.jpg",
+      institution: "UC Berkeley",
       isFollowing: true
     },
-    date: "2024-04-07T09:20:00Z",
-    content: "I'll be hosting a virtual workshop on advanced research methods in bioinformatics next month. Topics will include next-generation sequencing analysis, protein structure prediction, and network biology approaches.",
-    link: "https://example.com/workshop/bioinformatics",
-    tags: ["Bioinformatics", "Workshop", "Genomics"],
-    likes: 34,
-    comments: 5,
+    date: "2024-04-07T11:20:00Z",
+    content: "Our team has discovered new insights into adult neuroplasticity, challenging previous assumptions about the brain's ability to reorganize itself. The findings have significant implications for rehabilitation therapies.",
+    link: "https://example.com/paper/124",
+    tags: ["Neuroscience", "Neuroplasticity", "Research"],
+    likes: 56,
+    comments: 9,
     isBookmarked: true
   },
   {
     id: "5",
-    type: "achievement",
-    title: "Research Team Receives Major Grant for Sustainable Energy Research",
+    type: "announcement",
+    title: "Research Grant Opportunity: Sustainable Energy Solutions",
     author: {
       id: "auth5",
-      name: "Dr. Moonsup Kip",
-      avatar: "/placeholder.svg",
-      institution: "University of California, Berkeley",
+      name: "Dr. David Kim",
+      avatar: "https://randomuser.me/api/portraits/men/28.jpg",
+      institution: "Columbia University",
       isFollowing: false
     },
-    date: "2024-04-06T11:10:00Z",
-    content: "Thrilled to announce that our research team has been awarded a $3.5 million grant to advance our work on novel materials for sustainable energy storage. We're looking forward to making significant progress in this critical area.",
-    link: "https://example.com/grant/energy-research",
-    tags: ["Sustainable Energy", "Grant", "Materials Science"],
-    likes: 76,
-    comments: 15,
+    date: "2024-04-06T13:10:00Z",
+    content: "The National Science Foundation is offering grants for research projects focused on sustainable energy solutions. Applications are due by August 1, 2024.",
+    link: "https://example.com/grants/sustainable-energy",
+    tags: ["Grants", "Sustainable Energy", "Funding"],
+    likes: 31,
+    comments: 4,
     isBookmarked: false
+  },
+  {
+    id: "6",
+    type: "event",
+    title: "Seminar Series: Advances in Bioinformatics",
+    author: {
+      id: "auth6",
+      name: "Dr. Lisa Wong",
+      avatar: "https://randomuser.me/api/portraits/women/28.jpg",
+      institution: "Oxford University",
+      isFollowing: true
+    },
+    date: "2024-04-05T15:30:00Z",
+    content: "Join our weekly seminar series exploring the latest advances in bioinformatics. This week's topic: 'Machine Learning Approaches to Genomic Data Analysis'.",
+    link: "https://example.com/seminars/bioinformatics",
+    tags: ["Bioinformatics", "Seminar", "Machine Learning"],
+    likes: 27,
+    comments: 6,
+    isBookmarked: true
+  },
+  {
+    id: "7",
+    type: "publication",
+    title: "Breakthrough in Robotics: New Humanoid Robot Design",
+    author: {
+      id: "auth7",
+      name: "Prof. Robert Williams",
+      avatar: "https://randomuser.me/api/portraits/men/29.jpg",
+      institution: "Carnegie Mellon University",
+      isFollowing: false
+    },
+    date: "2024-04-04T10:05:00Z",
+    content: "Our team has developed a new humanoid robot design that significantly improves balance and mobility. The design incorporates novel materials and control algorithms.",
+    link: "https://example.com/paper/125",
+    tags: ["Robotics", "Engineering", "Research"],
+    likes: 48,
+    comments: 11,
+    isBookmarked: false
+  },
+  {
+    id: "8",
+    type: "announcement",
+    title: "New Research Collaboration Opportunity",
+    author: {
+      id: "auth8",
+      name: "Dr. Alexandra Novak",
+      avatar: "https://randomuser.me/api/portraits/women/29.jpg",
+      institution: "DeepMind",
+      isFollowing: true
+    },
+    date: "2024-04-03T14:20:00Z",
+    content: "We're seeking collaborators for a new research project on AI safety and alignment. The project will focus on developing robust methods for ensuring AI systems behave as intended.",
+    link: "https://example.com/collaboration/ai-safety",
+    tags: ["AI Safety", "Collaboration", "Research"],
+    likes: 39,
+    comments: 8,
+    isBookmarked: true
   }
 ];
 
