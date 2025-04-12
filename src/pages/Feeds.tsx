@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Bell, 
@@ -19,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Mock feed data
 const feedItems = [
@@ -353,7 +353,16 @@ export default function Feeds() {
                               <h3 className="font-semibold text-gray-800 flex items-center">
                                 {item.author.name}
                                 {item.author.isFollowing && (
-                                  <UserCheck className="h-4 w-4 ml-1 text-research-purple" title="You follow this account" />
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <UserCheck className="h-4 w-4 ml-1 text-research-purple" aria-label="You follow this account" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>You follow this account</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 )}
                               </h3>
                               <p className="text-sm text-gray-500">
@@ -452,7 +461,16 @@ export default function Feeds() {
                               <h3 className="font-semibold text-gray-800 flex items-center">
                                 {item.author.name}
                                 {item.author.isFollowing && (
-                                  <UserCheck className="h-4 w-4 ml-1 text-research-purple" title="You follow this account" />
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <UserCheck className="h-4 w-4 ml-1 text-research-purple" aria-label="You follow this account" />
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>You follow this account</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 )}
                               </h3>
                               <p className="text-sm text-gray-500">
