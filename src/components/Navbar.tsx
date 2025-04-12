@@ -20,7 +20,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-research-green to-research-black flex items-center justify-center">
-                <span className="text-white font-bold text-sm">K-BIOX</span>
+                <span className="text-black font-bold text-sm">K-BIOX</span>
               </div>
             </Link>
           </div>
