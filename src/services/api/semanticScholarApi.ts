@@ -1,4 +1,3 @@
-
 /**
  * Service for interacting with the Semantic Scholar API
  */
@@ -25,6 +24,13 @@ interface SemanticScholarPaper {
     name: string;
   }>;
   citationCount: number;
+  externalIds?: {
+    DOI?: string;
+    ArXiv?: string;
+    PMID?: string;
+    PMCID?: string;
+  };
+  url?: string;
 }
 
 export async function searchAuthorsByName(name: string): Promise<SemanticScholarAuthor[]> {

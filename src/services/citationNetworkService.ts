@@ -1,3 +1,4 @@
+
 /**
  * Service for creating citation networks using data from multiple APIs
  */
@@ -68,6 +69,7 @@ interface SemanticScholarPaper {
     PMCID?: string;
   };
   url?: string;
+  venue?: string;
 }
 
 // Fix for the url property in the OpenAlexWork type

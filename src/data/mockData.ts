@@ -5,6 +5,7 @@ export interface Researcher {
   avatar: string;
   institution: string;
   department: string;
+  location?: string; // Add the location property
   interests: string[];
   publications: number;
   citations: number;
@@ -45,6 +46,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/women/1.jpg",
     institution: "Stanford University",
     department: "Computer Science",
+    location: "Stanford, California, USA", // Add location data
     interests: ["Artificial Intelligence", "Machine Learning", "Ethics in AI"],
     publications: 78,
     citations: 4250,
@@ -59,6 +61,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/men/2.jpg",
     institution: "MIT",
     department: "Electrical Engineering",
+    location: "Cambridge, Massachusetts, USA",
     interests: ["Quantum Computing", "Data Science", "Machine Learning"],
     publications: 112,
     citations: 6300,
@@ -73,6 +76,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/women/3.jpg",
     institution: "UC Berkeley",
     department: "Computational Biology",
+    location: "Berkeley, California, USA",
     interests: ["Bioinformatics", "Genetics", "Machine Learning"],
     publications: 64,
     citations: 3100,
@@ -87,6 +91,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/men/4.jpg",
     institution: "Oxford University",
     department: "Physics",
+    location: "Oxford, UK",
     interests: ["Quantum Computing", "Material Science", "Data Science"],
     publications: 95,
     citations: 5400,
@@ -101,6 +106,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/women/5.jpg",
     institution: "Carnegie Mellon University",
     department: "Robotics",
+    location: "Pittsburgh, Pennsylvania, USA",
     interests: ["Robotics", "Computer Vision", "Human-Computer Interaction"],
     publications: 72,
     citations: 3800,
@@ -115,6 +121,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/men/6.jpg",
     institution: "ETH Zurich",
     department: "Computer Science",
+    location: "Zurich, Switzerland",
     interests: ["Natural Language Processing", "Artificial Intelligence", "Ethics in AI"],
     publications: 83,
     citations: 4900,
@@ -129,6 +136,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/women/7.jpg",
     institution: "California Institute of Technology",
     department: "Neuroscience",
+    location: "Pasadena, California, USA",
     interests: ["Neuroscience", "Cognitive Science", "Artificial Intelligence"],
     publications: 59,
     citations: 2900,
@@ -143,6 +151,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/men/8.jpg",
     institution: "University of Tokyo",
     department: "Climate Science",
+    location: "Tokyo, Japan",
     interests: ["Climate Science", "Data Science", "Renewable Energy"],
     publications: 105,
     citations: 5800,
@@ -157,6 +166,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/women/9.jpg",
     institution: "Georgia Tech",
     department: "Cybersecurity",
+    location: "Atlanta, Georgia, USA",
     interests: ["Cybersecurity", "Blockchain", "Ethics in AI"],
     publications: 67,
     citations: 3300,
@@ -171,6 +181,7 @@ export const researchers: Researcher[] = [
     avatar: "https://randomuser.me/api/portraits/men/10.jpg",
     institution: "Harvard University",
     department: "Astronomy",
+    location: "Cambridge, Massachusetts, USA",
     interests: ["Astronomy", "Data Science", "Machine Learning"],
     publications: 88,
     citations: 4600,

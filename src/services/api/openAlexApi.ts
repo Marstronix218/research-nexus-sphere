@@ -24,6 +24,7 @@ interface OpenAlexWork {
   publication_year: number;
   doi?: string;
   cited_by_count: number;
+  url?: string;
   authorships: Array<{
     author: {
       id: string;
