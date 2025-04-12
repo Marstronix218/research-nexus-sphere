@@ -8,10 +8,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-research-blue to-research-purple flex items-center justify-center">
-                <span className="text-white font-bold text-sm">RN</span>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-research-green to-research-black flex items-center justify-center">
+                <span className="text-white font-bold text-sm">K-BIOX</span>
               </div>
-              <span className="text-lg font-semibold text-research-blue">K-biox</span>
             </Link>
             <p className="text-sm text-gray-600">
               Connecting researchers globally through shared interests and citation networks.
