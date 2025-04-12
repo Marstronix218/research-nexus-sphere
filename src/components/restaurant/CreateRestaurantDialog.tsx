@@ -43,6 +43,16 @@ const CreateRestaurantDialog = ({ open, onOpenChange, onSubmit }: CreateRestaura
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     
+    // Default images to use randomly
+    const defaultImages = [
+      "/lovable-uploads/400ab1bc-496a-498b-b85f-5941eff1e0ba.png",
+      "/lovable-uploads/0da06b86-73bb-4edb-9242-faf3f3127c0f.png",
+      "/lovable-uploads/02a7c074-9fac-4371-b20d-bf3e19320493.png"
+    ];
+    
+    // Select a random image
+    const randomImage = defaultImages[Math.floor(Math.random() * defaultImages.length)];
+    
     const newRestaurant: Restaurant = {
       id: `restaurant-${Date.now()}`,
       name: values.name,
@@ -59,7 +69,8 @@ const CreateRestaurantDialog = ({ open, onOpenChange, onSubmit }: CreateRestaura
         }
       ],
       dishes: [],
-      badges: []
+      badges: [],
+      storeImage: randomImage
     };
     
     // Simulate API call
