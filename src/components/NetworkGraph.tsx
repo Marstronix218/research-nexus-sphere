@@ -38,12 +38,14 @@ function NodeObject({
   useFrame(() => {
     if (!mesh.current) return;
     
+    const material = mesh.current.material as THREE.MeshStandardMaterial;
+    
     if (isSelected) {
-      mesh.current.material.color.lerp(selectedColor, 0.1);
+      material.color.lerp(selectedColor, 0.1);
     } else if (isHovered) {
-      mesh.current.material.color.lerp(hoverColor, 0.1);
+      material.color.lerp(hoverColor, 0.1);
     } else {
-      mesh.current.material.color.lerp(baseColor, 0.1);
+      material.color.lerp(baseColor, 0.1);
     }
     
     // Subtle animation
@@ -68,7 +70,7 @@ function NodeObject({
         }}
       >
         <sphereGeometry args={[finalScale, 16, 16]} />
-        <meshStandardMaterial roughness={0.5} metalness={0.2} />
+        <meshStandardMaterial roughness={0.5} metalness={0.2} color={baseColor} />
       </mesh>
       
       {(isHovered || isSelected) && (
@@ -78,9 +80,11 @@ function NodeObject({
           color="#ffffff"
           anchorX="center"
           anchorY="middle"
-          backgroundColor="#00000088"
-          padding={0.2}
         >
+          <mesh>
+            <planeGeometry args={[node.name.length * 0.3, 1]} />
+            <meshBasicMaterial color="#000000" opacity={0.8} transparent />
+          </mesh>
           {node.name}
         </Text>
       )}
@@ -89,36 +93,29 @@ function NodeObject({
 }
 
 // Link component
-function LinkObject({ start, end, isHighlighted }: { start: [number, number, number], end: [number, number, number], isHighlighted: boolean }) {
-  const lineRef = useRef<THREE.Line>(null);
-  
+function LinkObject({ 
+  start, 
+  end, 
+  isHighlighted 
+}: { 
+  start: [number, number, number], 
+  end: [number, number, number], 
+  isHighlighted: boolean 
+}) {
+  // Create points for the line
   const points = [
     new THREE.Vector3(...start),
     new THREE.Vector3(...end)
   ];
   
   const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-  
-  // Animate highlight
-  useFrame(() => {
-    if (!lineRef.current) return;
-    
-    const targetOpacity = isHighlighted ? 1 : 0.2;
-    const material = lineRef.current.material as THREE.LineBasicMaterial;
-    material.opacity += (targetOpacity - material.opacity) * 0.1;
+  const lineMaterial = new THREE.LineBasicMaterial({ 
+    color: isHighlighted ? "#9B59B6" : "#3498DB",
+    opacity: isHighlighted ? 1 : 0.2,
+    transparent: true
   });
   
-  return (
-    <line ref={lineRef} geometry={lineGeometry}>
-      <lineBasicMaterial 
-        attach="material" 
-        color={isHighlighted ? "#9B59B6" : "#3498DB"} 
-        linewidth={isHighlighted ? 2 : 1} 
-        transparent 
-        opacity={0.2} 
-      />
-    </line>
-  );
+  return <line geometry={lineGeometry} material={lineMaterial} />;
 }
 
 // Scene component
