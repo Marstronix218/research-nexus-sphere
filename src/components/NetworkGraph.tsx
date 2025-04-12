@@ -1,3 +1,4 @@
+
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
@@ -6,7 +7,16 @@ import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Search, Maximize, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Search, Maximize, ZoomIn, ZoomOut, RotateCcw, RefreshCw } from "lucide-react";
+import { 
+  searchResearchers, 
+  getResearcherDetails, 
+  createResearcherCitationNetwork,
+  createCoAuthorNetwork,
+  CitationNode, 
+  CitationLink 
+} from "@/services/citationNetworkService";
+import { toast } from "@/components/ui/use-toast";
 
 // Node component for the 3D graph
 function NodeObject({ 
@@ -217,8 +227,10 @@ export default function NetworkGraph() {
   const [networkData, setNetworkData] = useState(createNetworkData());
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<Researcher[]>([]);
+  const [searchResults, setSearchResults] = useState<Partial<Researcher>[]>([]);
   const [scale, setScale] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [networkType, setNetworkType] = useState<'citation' | 'coauthor'>('citation');
   
   // Handle node selection
   const handleSelectNode = (id: string) => {
@@ -236,23 +248,97 @@ export default function NetworkGraph() {
       return;
     }
     
-    const results = researchers.filter(
-      r => r.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
+    const fetchResults = async () => {
+      try {
+        setIsLoading(true);
+        // First try to get from the real APIs
+        const apiResults = await searchResearchers(searchTerm);
+        
+        if (apiResults.length > 0) {
+          setSearchResults(apiResults);
+        } else {
+          // Fall back to mock data if no results from API
+          const mockResults = researchers.filter(
+            r => r.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          setSearchResults(mockResults);
+        }
+      } catch (error) {
+        console.error("Error searching researchers:", error);
+        // Fall back to mock data on error
+        const mockResults = researchers.filter(
+          r => r.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setSearchResults(mockResults);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    // Debounce to avoid too many API calls
+    const timeoutId = setTimeout(fetchResults, 500);
+    return () => clearTimeout(timeoutId);
   }, [searchTerm]);
   
   // Highlight search result
-  const handleSelectSearchResult = (id: string) => {
-    setSelectedNodes([id]);
-    setSearchTerm("");
-    setSearchResults([]);
+  const handleSelectSearchResult = async (id: string, source?: string) => {
+    try {
+      setIsLoading(true);
+      setSelectedNodes([id]);
+      setSearchTerm("");
+      setSearchResults([]);
+      
+      // Fetch and create the network
+      let newNetworkData;
+      
+      if (networkType === 'citation') {
+        toast({
+          title: "Loading citation network",
+          description: "Fetching citation data from academic APIs...",
+        });
+        newNetworkData = await createResearcherCitationNetwork(id, source);
+      } else {
+        toast({
+          title: "Loading co-author network",
+          description: "Fetching collaboration data from academic APIs...",
+        });
+        newNetworkData = await createCoAuthorNetwork(id, source);
+      }
+      
+      // If we got data from the API, use it
+      if (newNetworkData.nodes.length > 0) {
+        setNetworkData(newNetworkData);
+        toast({
+          title: "Network loaded",
+          description: `Loaded ${newNetworkData.nodes.length} nodes and ${newNetworkData.links.length} connections.`,
+        });
+      } else {
+        // Fall back to mock data
+        toast({
+          title: "Using sample data",
+          description: "Could not retrieve enough data from APIs, showing sample network.",
+          variant: "destructive"
+        });
+        setNetworkData(createNetworkData());
+      }
+    } catch (error) {
+      console.error("Error creating network:", error);
+      toast({
+        title: "Error loading network",
+        description: "Could not create the citation network. Using sample data instead.",
+        variant: "destructive"
+      });
+      setNetworkData(createNetworkData());
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   // Reset view
   const resetView = () => {
     setSelectedNodes([]);
     setScale(1);
+    setNetworkData(createNetworkData());
   };
   
   return (
@@ -277,6 +363,7 @@ export default function NetworkGraph() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by name..."
                 className="w-full p-2 border rounded-md pl-10 focus:outline-none focus:ring-2 focus:ring-research-purple"
+                disabled={isLoading}
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             </div>
@@ -287,10 +374,11 @@ export default function NetworkGraph() {
                   <button
                     key={researcher.id}
                     className="w-full p-2 hover:bg-gray-50 text-left flex items-center"
-                    onClick={() => handleSelectSearchResult(researcher.id)}
+                    onClick={() => handleSelectSearchResult(researcher.id!, researcher.source)}
+                    disabled={isLoading}
                   >
                     <img
-                      src={researcher.avatar}
+                      src={researcher.avatar || "/placeholder.svg"}
                       alt={researcher.name}
                       className="rounded-full w-8 h-8 object-cover mr-2"
                     />
@@ -304,6 +392,26 @@ export default function NetworkGraph() {
             )}
             
             <div className="mt-6">
+              <h4 className="text-sm font-medium mb-2">Network Type</h4>
+              <div className="flex gap-2 mb-4">
+                <Button 
+                  variant={networkType === 'citation' ? "default" : "outline"} 
+                  size="sm"
+                  onClick={() => setNetworkType('citation')}
+                  className="flex-1"
+                >
+                  Citation
+                </Button>
+                <Button 
+                  variant={networkType === 'coauthor' ? "default" : "outline"} 
+                  size="sm"
+                  onClick={() => setNetworkType('coauthor')}
+                  className="flex-1"
+                >
+                  Co-Author
+                </Button>
+              </div>
+              
               <h4 className="text-sm font-medium mb-2">Network Size</h4>
               <Slider
                 defaultValue={[scale]}
@@ -311,6 +419,7 @@ export default function NetworkGraph() {
                 max={2}
                 step={0.1}
                 onValueChange={(values) => setScale(values[0])}
+                disabled={isLoading}
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>Smaller</span>
@@ -319,10 +428,10 @@ export default function NetworkGraph() {
             </div>
             
             <div className="flex justify-between mt-6">
-              <Button variant="outline" size="sm" onClick={resetView}>
+              <Button variant="outline" size="sm" onClick={resetView} disabled={isLoading}>
                 <RotateCcw className="mr-1 h-3 w-3" /> Reset
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" disabled={true}>
                 <Maximize className="mr-1 h-3 w-3" /> Fullscreen
               </Button>
             </div>
@@ -335,34 +444,64 @@ export default function NetworkGraph() {
             {selectedNodes.length > 0 ? (
               <div className="space-y-3">
                 {selectedNodes.map(nodeId => {
-                  const researcher = researchers.find(r => r.id === nodeId);
-                  if (!researcher) return null;
+                  // First check if it's in the network data
+                  const nodeInNetwork = networkData.nodes.find(n => n.id === nodeId);
                   
-                  return (
-                    <div key={nodeId} className="flex items-start p-2 bg-gray-50 rounded-lg">
-                      <img
-                        src={researcher.avatar}
-                        alt={researcher.name}
-                        className="rounded-full w-10 h-10 object-cover mr-3"
-                      />
-                      <div>
-                        <h4 className="font-medium text-sm">{researcher.name}</h4>
-                        <p className="text-xs text-gray-500">{researcher.institution}</p>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {researcher.interests.slice(0, 2).map(interest => (
-                            <Badge key={interest} variant="secondary" className="text-xs">
-                              {interest}
-                            </Badge>
-                          ))}
+                  // Then check in mock researchers
+                  const researcher = nodeInNetwork?.type === "researcher" 
+                    ? researchers.find(r => r.id === nodeId) 
+                    : null;
+                  
+                  if (!nodeInNetwork) return null;
+                  
+                  if (researcher) {
+                    // It's a researcher node
+                    return (
+                      <div key={nodeId} className="flex items-start p-2 bg-gray-50 rounded-lg">
+                        <img
+                          src={researcher.avatar || "/placeholder.svg"}
+                          alt={researcher.name}
+                          className="rounded-full w-10 h-10 object-cover mr-3"
+                        />
+                        <div>
+                          <h4 className="font-medium text-sm">{researcher.name}</h4>
+                          <p className="text-xs text-gray-500">{researcher.institution}</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {researcher.interests.slice(0, 2).map(interest => (
+                              <Badge key={interest} variant="secondary" className="text-xs">
+                                {interest}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
+                    );
+                  } else {
+                    // It's a paper or other type of node
+                    const citationNode = nodeInNetwork as CitationNode;
+                    return (
+                      <div key={nodeId} className="p-2 bg-gray-50 rounded-lg">
+                        <h4 className="font-medium text-sm">{citationNode.name}</h4>
+                        {citationNode.year && (
+                          <p className="text-xs text-gray-500">Published: {citationNode.year}</p>
+                        )}
+                        {citationNode.authors && citationNode.authors.length > 0 && (
+                          <p className="text-xs text-gray-500">
+                            By: {citationNode.authors.slice(0, 2).join(", ")}
+                            {citationNode.authors.length > 2 ? " et al." : ""}
+                          </p>
+                        )}
+                        {citationNode.venue && (
+                          <p className="text-xs text-gray-500">In: {citationNode.venue}</p>
+                        )}
+                      </div>
+                    );
+                  }
                 })}
               </div>
             ) : (
               <p className="text-gray-500 text-sm italic">
-                Click on a node in the network to select a researcher
+                Click on a node in the network to select a researcher or paper
               </p>
             )}
           </div>
@@ -371,7 +510,17 @@ export default function NetworkGraph() {
         {/* Network visualization */}
         <div className="md:w-3/4">
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="network-container h-[600px]">
+            <div className="network-container h-[600px] relative">
+              {isLoading && (
+                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
+                  <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                    <RefreshCw className="h-8 w-8 mx-auto animate-spin text-research-purple mb-4" />
+                    <p className="text-lg font-medium">Loading network data...</p>
+                    <p className="text-sm text-gray-500 mt-2">This may take a moment</p>
+                  </div>
+                </div>
+              )}
+              
               <Canvas className="network-canvas">
                 <NetworkScene 
                   data={networkData} 
@@ -382,10 +531,10 @@ export default function NetworkGraph() {
               </Canvas>
               
               <div className="absolute bottom-4 right-4 flex space-x-2">
-                <Button variant="outline" size="icon" className="bg-white">
+                <Button variant="outline" size="icon" className="bg-white" disabled={isLoading}>
                   <ZoomIn className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon" className="bg-white">
+                <Button variant="outline" size="icon" className="bg-white" disabled={isLoading}>
                   <ZoomOut className="h-4 w-4" />
                 </Button>
               </div>
@@ -399,7 +548,7 @@ export default function NetworkGraph() {
           <div className="mt-4 text-sm text-gray-500">
             <p>
               <span className="font-medium">How to use:</span> Click and drag to rotate, scroll to zoom, 
-              click on researchers to select them. Lines represent citation relationships.
+              click on researchers or papers to select them. Lines represent {networkType === 'citation' ? 'citation' : 'collaboration'} relationships.
             </p>
           </div>
         </div>
