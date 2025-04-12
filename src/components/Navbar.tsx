@@ -22,7 +22,7 @@ export default function Navbar() {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-research-blue to-research-purple flex items-center justify-center">
                 <span className="text-white font-bold text-sm">RN</span>
               </div>
-              <span className="text-lg font-semibold text-research-blue">Research Nexus</span>
+              <span className="text-lg font-semibold text-research-blue">K-Biox</span>
             </Link>
           </div>
 

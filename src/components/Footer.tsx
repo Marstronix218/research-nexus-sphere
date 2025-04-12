@@ -11,7 +11,7 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-research-blue to-research-purple flex items-center justify-center">
                 <span className="text-white font-bold text-sm">RN</span>
               </div>
-              <span className="text-lg font-semibold text-research-blue">Research Nexus</span>
+              <span className="text-lg font-semibold text-research-blue">K-biox</span>
             </Link>
             <p className="text-sm text-gray-600">
               Connecting researchers globally through shared interests and citation networks.
