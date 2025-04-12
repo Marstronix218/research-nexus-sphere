@@ -1,10 +1,10 @@
 
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Plus, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RestaurantList from "@/components/restaurant/RestaurantList";
 import CreateRestaurantDialog from "@/components/restaurant/CreateRestaurantDialog";
-import { Restaurant } from "@/types/restaurant";
+import { Restaurant, Dish } from "@/types/restaurant";
 
 const RestaurantPage = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -176,6 +176,26 @@ const RestaurantPage = () => {
     }
   ]);
 
+  // Get top dishes across all restaurants
+  const hotDishes = useMemo(() => {
+    const allDishes: (Dish & { restaurantName: string, restaurantId: string })[] = [];
+    
+    restaurants.forEach(restaurant => {
+      restaurant.dishes.forEach(dish => {
+        allDishes.push({
+          ...dish,
+          restaurantName: restaurant.name,
+          restaurantId: restaurant.id
+        });
+      });
+    });
+    
+    // Sort by likes and take top 3
+    return allDishes
+      .sort((a, b) => b.likes - a.likes)
+      .slice(0, 3);
+  }, [restaurants]);
+
   const handleCreateRestaurant = (newRestaurant: Restaurant) => {
     setRestaurants([...restaurants, newRestaurant]);
     setIsCreateDialogOpen(false);
@@ -195,6 +215,41 @@ const RestaurantPage = () => {
           Open a Restaurant
         </Button>
       </div>
+
+      {/* Hot Dishes Section */}
+      {hotDishes.length > 0 && (
+        <div className="mb-10">
+          <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <TrendingUp className="h-5 w-5 text-orange-500 mr-2" />
+            Hot Dishes
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {hotDishes.map(dish => (
+              <div 
+                key={dish.id} 
+                className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="p-4">
+                  <div className="flex justify-between items-start">
+                    <h3 className="font-medium text-lg">{dish.title}</h3>
+                    <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full flex items-center">
+                      ❤️ {dish.likes}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">{dish.restaurantName}</p>
+                  <p className="text-sm text-gray-700 mt-2 line-clamp-2">{dish.description}</p>
+                  <div className="mt-3 flex justify-between items-center">
+                    <span className="text-xs text-gray-500">{dish.date}</span>
+                    <Button variant="ghost" size="sm" className="text-research-purple hover:text-research-light-purple">
+                      View Restaurant
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <RestaurantList restaurants={restaurants} />
 

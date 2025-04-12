@@ -54,3 +54,13 @@ export type ResearchTopic =
   | "Quantum Computing" 
   | "Optimization"
   | "Bioinformatics";
+
+export interface Researcher {
+  id: string;
+  name: string;
+  institution?: string;
+  location?: string;
+  interests: string[];
+  lat?: number;
+  lng?: number;
+}

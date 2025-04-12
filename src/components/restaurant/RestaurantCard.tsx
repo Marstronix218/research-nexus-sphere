@@ -12,7 +12,9 @@ interface RestaurantCardProps {
 const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const isFull = restaurant.members.length >= 5;
-  const latestDish = restaurant.dishes.length > 0 ? restaurant.dishes[0] : null;
+  
+  // Get top 3 dishes
+  const topDishes = restaurant.dishes.slice(0, 3);
 
   // Default store images if none provided
   const defaultImages = [
@@ -22,6 +24,7 @@ const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
   ];
   
   const storeImage = restaurant.storeImage || defaultImages[restaurant.id.charCodeAt(0) % defaultImages.length];
+  const plateImage = "/lovable-uploads/1e0b3ec7-caec-4cd6-ae65-81051e3c4e9f.png";
 
   return (
     <Card 
@@ -88,10 +91,12 @@ const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
             </div>
           </div>
           
-          {latestDish && (
+          {topDishes.length > 0 && (
             <div className="mt-3 border-t pt-3">
-              <h4 className="text-xs font-semibold uppercase text-gray-500 mb-1">Latest Dish</h4>
-              <p className="text-sm font-medium truncate">{latestDish.title}</p>
+              <h4 className="text-xs font-semibold uppercase text-gray-500 mb-1">Latest Dishes</h4>
+              {topDishes.map(dish => (
+                <p key={dish.id} className="text-sm font-medium truncate">{dish.title}</p>
+              ))}
             </div>
           )}
         </div>
@@ -128,19 +133,33 @@ const RestaurantCard = ({ restaurant, onClick }: RestaurantCardProps) => {
       
       {/* Dishes/plates display at bottom */}
       {restaurant.dishes.length > 0 && (
-        <div className="bg-gray-50 p-3 border-t flex gap-2 overflow-x-auto">
-          {restaurant.dishes.map((dish) => (
-            <div key={dish.id} className="min-w-20 w-20 bg-white rounded-full h-20 flex flex-col items-center justify-center shadow-sm border relative">
-              <div className="absolute -top-1 -right-1 bg-red-100 text-red-800 text-xs px-1 rounded-full flex items-center">
-                <Heart className="h-3 w-3 mr-0.5" fill={dish.likes > 20 ? "currentColor" : "none"} />
-                <span>{dish.likes}</span>
+        <div className="bg-gray-50 p-3 border-t flex gap-2 overflow-x-auto justify-center">
+          {topDishes.map((dish) => (
+            <div key={dish.id} className="relative">
+              <img 
+                src={plateImage} 
+                alt="Plate" 
+                className="w-24 h-24 object-contain"
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="bg-white/90 rounded-full px-2 py-1 text-xs text-center shadow-sm max-w-[90%]">
+                  <div className="font-medium truncate" title={dish.title}>
+                    {dish.title.length > 12 ? dish.title.substring(0, 12) + '...' : dish.title}
+                  </div>
+                  <div className="flex items-center justify-center mt-1">
+                    <Heart className="h-3 w-3 mr-0.5 text-red-500" fill="currentColor" />
+                    <span>{dish.likes}</span>
+                  </div>
+                </div>
               </div>
-              <span className="text-[10px] text-center px-1 font-medium" title={dish.title}>
-                {dish.title.length > 15 ? dish.title.substring(0, 15) + '...' : dish.title}
-              </span>
-              <span className="text-[8px] text-gray-500">{dish.date}</span>
             </div>
           ))}
+          
+          {restaurant.dishes.length > 3 && (
+            <div className="flex items-center justify-center text-sm text-gray-500">
+              +{restaurant.dishes.length - 3} more
+            </div>
+          )}
         </div>
       )}
     </Card>
