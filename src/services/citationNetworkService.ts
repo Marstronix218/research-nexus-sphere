@@ -20,10 +20,20 @@ export interface CitationNode extends Node {
   citationCount?: number;
 }
 
+export interface PaperInfo {
+  id?: string;
+  title?: string;
+  authors?: string[];
+  year?: number;
+  doi?: string;
+  url?: string;
+}
+
 export interface CitationLink extends Link {
   year?: number;
   type?: 'citation' | 'reference';
   weight?: number; // Number of citations
+  papers?: PaperInfo[]; // Papers that create this citation relationship
 }
 
 export interface CitationNetworkData {
@@ -98,6 +108,7 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
   const nodes: CitationNode[] = [];
   const links: CitationLink[] = [];
   const citationMap = new Map<string, Map<string, number>>(); // source -> target -> count
+  const paperMap = new Map<string, Map<string, PaperInfo[]>>(); // source -> target -> papers
   
   try {
     // Get the main researcher's details
@@ -163,8 +174,27 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
                   citationMap.set(citingAuthor.authorId, new Map());
                 }
                 
+                if (!paperMap.has(citingAuthor.authorId)) {
+                  paperMap.set(citingAuthor.authorId, new Map());
+                }
+                
                 const targetMap = citationMap.get(citingAuthor.authorId)!;
                 targetMap.set(mainResearcherId, (targetMap.get(mainResearcherId) || 0) + 1);
+                
+                // Store the paper information that created this citation
+                const paperTargetMap = paperMap.get(citingAuthor.authorId)!;
+                if (!paperTargetMap.has(mainResearcherId)) {
+                  paperTargetMap.set(mainResearcherId, []);
+                }
+                
+                paperTargetMap.get(mainResearcherId)!.push({
+                  id: citingPaper.paperId,
+                  title: citingPaper.title,
+                  authors: citingPaper.authors?.map(a => a.name) || [],
+                  year: citingPaper.year,
+                  doi: citingPaper.externalIds?.DOI,
+                  url: citingPaper.url
+                });
                 
                 // Add this author if not already in coauthors
                 if (!coauthors.has(citingAuthor.authorId)) {
@@ -212,8 +242,27 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
                   citationMap.set(authorId, new Map());
                 }
                 
+                if (!paperMap.has(authorId)) {
+                  paperMap.set(authorId, new Map());
+                }
+                
                 const targetMap = citationMap.get(authorId)!;
                 targetMap.set(mainResearcherId, (targetMap.get(mainResearcherId) || 0) + 1);
+                
+                // Store the paper information that created this citation
+                const paperTargetMap = paperMap.get(authorId)!;
+                if (!paperTargetMap.has(mainResearcherId)) {
+                  paperTargetMap.set(mainResearcherId, []);
+                }
+                
+                paperTargetMap.get(mainResearcherId)!.push({
+                  id: citingWork.id,
+                  title: citingWork.title,
+                  authors: citingWork.authorships?.map(a => a.author.display_name) || [],
+                  year: citingWork.publication_year,
+                  doi: citingWork.doi,
+                  url: citingWork.doi ? `https://doi.org/${citingWork.doi}` : citingWork.url
+                });
                 
                 // Add this author if not already in coauthors
                 if (!coauthors.has(authorId)) {
@@ -265,15 +314,19 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
       }
     }
     
-    // Add citation links between authors
+    // Add citation links between authors with paper information
     for (const [sourceId, targetMap] of citationMap.entries()) {
       for (const [targetId, count] of targetMap.entries()) {
+        // Get the papers that created this citation relationship
+        const citingPapers = paperMap.get(sourceId)?.get(targetId) || [];
+        
         links.push({
           source: sourceId,
           target: targetId,
           value: count,
           type: 'citation',
-          weight: count
+          weight: count,
+          papers: citingPapers
         });
       }
     }
@@ -308,11 +361,28 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
           // Check if any co-authors cite this author
           for (const citation of citations) {
             let citingAuthors: any[] = [];
+            let paperInfo: PaperInfo | null = null;
             
             if (source === 'semanticscholar') {
               citingAuthors = citation.authors || [];
+              paperInfo = {
+                id: citation.paperId,
+                title: citation.title,
+                authors: citation.authors?.map((a: any) => a.name) || [],
+                year: citation.year,
+                doi: citation.externalIds?.DOI,
+                url: citation.url
+              };
             } else if (source === 'openalex') {
               citingAuthors = citation.authorships?.map((a: any) => a.author) || [];
+              paperInfo = {
+                id: citation.id,
+                title: citation.title,
+                authors: citation.authorships?.map((a: any) => a.author.display_name) || [],
+                year: citation.publication_year,
+                doi: citation.doi,
+                url: citation.doi ? `https://doi.org/${citation.doi}` : citation.url
+              };
             }
             
             for (const citingAuthor of citingAuthors) {
@@ -323,8 +393,22 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
                   citationMap.set(citingAuthorId, new Map());
                 }
                 
+                if (!paperMap.has(citingAuthorId)) {
+                  paperMap.set(citingAuthorId, new Map());
+                }
+                
                 const targetMap = citationMap.get(citingAuthorId)!;
                 targetMap.set(authorId, (targetMap.get(authorId) || 0) + 1);
+                
+                // Store the paper information
+                const paperTargetMap = paperMap.get(citingAuthorId)!;
+                if (!paperTargetMap.has(authorId)) {
+                  paperTargetMap.set(authorId, []);
+                }
+                
+                if (paperInfo) {
+                  paperTargetMap.get(authorId)!.push(paperInfo);
+                }
               }
             }
           }
@@ -334,17 +418,21 @@ export async function createResearcherCitationNetwork(mainResearcherId: string, 
       }
     }
     
-    // Add the additional citation links
+    // Add the additional citation links with paper information
     for (const [sourceId, targetMap] of citationMap.entries()) {
       for (const [targetId, count] of targetMap.entries()) {
         // Check if this link already exists
         if (!links.some(l => l.source === sourceId && l.target === targetId)) {
+          // Get the papers that created this citation relationship
+          const citingPapers = paperMap.get(sourceId)?.get(targetId) || [];
+          
           links.push({
             source: sourceId,
             target: targetId,
             value: count,
             type: 'citation',
-            weight: count
+            weight: count,
+            papers: citingPapers
           });
         }
       }
@@ -460,15 +548,39 @@ export function createSampleResearcherNetwork(): CitationNetworkData {
     { id: "7", name: "Grace Davis", type: "researcher", val: 1 }
   ];
   
+  const samplePapers: PaperInfo[] = [
+    {
+      id: "p1",
+      title: "Advances in Network Theory",
+      authors: ["Bob Jones", "John Smith"],
+      year: 2022,
+      doi: "10.1234/net.2022.123"
+    },
+    {
+      id: "p2",
+      title: "Citation Analysis Methodology",
+      authors: ["Carol Taylor", "Michael Brown"],
+      year: 2021,
+      doi: "10.1234/cite.2021.456"
+    },
+    {
+      id: "p3",
+      title: "Research Network Visualization",
+      authors: ["David Brown", "Sarah Johnson"],
+      year: 2023,
+      doi: "10.1234/vis.2023.789"
+    }
+  ];
+  
   const links: CitationLink[] = [
-    { source: "2", target: "1", value: 3, weight: 3 },
-    { source: "3", target: "1", value: 2, weight: 2 },
-    { source: "4", target: "1", value: 1, weight: 1 },
-    { source: "4", target: "2", value: 2, weight: 2 },
-    { source: "5", target: "3", value: 1, weight: 1 },
-    { source: "1", target: "6", value: 2, weight: 2 },
-    { source: "6", target: "7", value: 1, weight: 1 },
-    { source: "3", target: "2", value: 1, weight: 1 }
+    { source: "2", target: "1", value: 3, weight: 3, papers: [samplePapers[0]] },
+    { source: "3", target: "1", value: 2, weight: 2, papers: [samplePapers[1]] },
+    { source: "4", target: "1", value: 1, weight: 1, papers: [samplePapers[2]] },
+    { source: "4", target: "2", value: 2, weight: 2, papers: [samplePapers[2], samplePapers[0]] },
+    { source: "5", target: "3", value: 1, weight: 1, papers: [samplePapers[0]] },
+    { source: "1", target: "6", value: 2, weight: 2, papers: [samplePapers[1]] },
+    { source: "6", target: "7", value: 1, weight: 1, papers: [samplePapers[2]] },
+    { source: "3", target: "2", value: 1, weight: 1, papers: [samplePapers[0]] }
   ];
   
   return { nodes, links };

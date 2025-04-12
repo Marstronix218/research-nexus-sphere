@@ -1,4 +1,3 @@
-
 import { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
@@ -18,6 +17,8 @@ import {
   CitationLink 
 } from "@/services/citationNetworkService";
 import { toast } from "@/components/ui/use-toast";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 function NodeObject({ 
   node, 
@@ -40,7 +41,7 @@ function NodeObject({
   
   const baseColor = new THREE.Color("#3498DB");
   const hoverColor = new THREE.Color("#9B59B6");
-  const selectedColor = new THREE.Color("#E74C3C");
+  const selectedColor = new THREE.Color("#E74C3C);
   
   useFrame(() => {
     if (!mesh.current) return;
@@ -59,7 +60,6 @@ function NodeObject({
   });
   
   const nodeType = (node as any).type || 'default';
-  // Smaller base size for researchers
   const baseSize = 0.2;
   const scaleFactor = isSelected ? 1.2 : isHovered ? 1.1 : 1;
   const nodeValue = node.val || 1;
@@ -99,20 +99,36 @@ function NodeObject({
   );
 }
 
+interface PaperInfo {
+  id?: string;
+  title?: string;
+  authors?: string[];
+  year?: number;
+  doi?: string;
+  url?: string;
+}
+
 function LinkObject({ 
   start, 
   end, 
   isHighlighted,
   isDirectional = true,
-  weight = 1
+  weight = 1,
+  sourceId,
+  targetId,
+  papers = [],
+  onHoverLink
 }: { 
   start: [number, number, number], 
   end: [number, number, number], 
   isHighlighted: boolean,
   isDirectional?: boolean,
-  weight?: number
+  weight?: number,
+  sourceId?: string,
+  targetId?: string,
+  papers?: PaperInfo[],
+  onHoverLink?: (source: string | null, target: string | null, papers: PaperInfo[] | null) => void
 }) {
-  // Calculate the direction vector
   const direction = new THREE.Vector3(
     end[0] - start[0],
     end[1] - start[1],
@@ -122,27 +138,39 @@ function LinkObject({
   const length = direction.length();
   direction.normalize();
   
-  // Calculate the position for the arrow
   const arrowPosition = new THREE.Vector3(
     start[0] + direction.x * length * 0.7,
     start[1] + direction.y * length * 0.7,
     start[2] + direction.z * length * 0.7
   );
   
-  // Create line points
   const points = [];
   points.push(new THREE.Vector3(...start));
   points.push(new THREE.Vector3(...end));
   
   const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
   
-  // Scale line width by weight, but cap it to avoid very thick lines
   const lineWeight = Math.min(weight, 5) / 10;
   const lineOpacity = isHighlighted ? 0.8 : 0.3;
   const lineColor = isHighlighted ? "#E74C3C" : "#3498DB";
   
+  const handlePointerOver = () => {
+    if (onHoverLink && sourceId && targetId) {
+      onHoverLink(sourceId, targetId, papers);
+    }
+  };
+  
+  const handlePointerOut = () => {
+    if (onHoverLink) {
+      onHoverLink(null, null, null);
+    }
+  };
+  
   return (
-    <>
+    <group 
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
+    >
       <primitive object={new THREE.Line(
         lineGeometry,
         new THREE.LineBasicMaterial({ 
@@ -159,7 +187,7 @@ function LinkObject({
           <meshBasicMaterial color={lineColor} transparent opacity={0.8} />
         </mesh>
       )}
-    </>
+    </group>
   );
 }
 
@@ -167,12 +195,14 @@ function NetworkScene({
   data, 
   onSelectNode, 
   highlightedNodes = [], 
-  scale = 1 
+  scale = 1,
+  onHoverLink 
 }: { 
   data: { nodes: Node[], links: Link[] }, 
   onSelectNode: (id: string) => void, 
   highlightedNodes?: string[], 
-  scale?: number 
+  scale?: number,
+  onHoverLink?: (source: string | null, target: string | null, papers: PaperInfo[] | null) => void
 }) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const { camera } = useThree();
@@ -180,7 +210,6 @@ function NetworkScene({
   const nodePositions = useRef<Record<string, [number, number, number]>>({});
   
   useEffect(() => {
-    // Use a larger radius to spread out nodes more
     const r = 20 * scale;
     data.nodes.forEach((node, i) => {
       const phi = Math.acos(-1 + (2 * i) / data.nodes.length);
@@ -227,6 +256,10 @@ function NetworkScene({
             isHighlighted={isHighlighted}
             isDirectional={true}
             weight={(link as CitationLink).weight || 1}
+            sourceId={link.source as string}
+            targetId={link.target as string}
+            papers={(link as CitationLink).papers || []}
+            onHoverLink={onHoverLink}
           />
         );
       })}
@@ -254,6 +287,65 @@ function NetworkScene({
   );
 }
 
+function CitationPapersCard({ source, target, papers }: { source: string, target: string, papers: PaperInfo[] }) {
+  const sourceNode = document.querySelector(`[data-node-id="${source}"]`);
+  const targetNode = document.querySelector(`[data-node-id="${target}"]`);
+  
+  const sourceName = sourceNode?.getAttribute("data-node-name") || source;
+  const targetName = targetNode?.getAttribute("data-node-name") || target;
+  
+  return (
+    <div className="w-full">
+      <h3 className="text-sm font-medium mb-2">
+        Citation papers from <span className="text-research-purple">{sourceName}</span>
+        <span> to </span>
+        <span className="text-research-blue">{targetName}</span>
+      </h3>
+      
+      {papers.length > 0 ? (
+        <div className="max-h-60 overflow-y-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Title</TableHead>
+                <TableHead>Year</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {papers.map((paper, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <div className="font-medium">{paper.title || "Unknown title"}</div>
+                    {paper.authors && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        {paper.authors.join(", ")}
+                      </div>
+                    )}
+                    {paper.doi && (
+                      <div className="text-xs text-blue-500 mt-1">
+                        <a 
+                          href={paper.url || `https://doi.org/${paper.doi}`}
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                        >
+                          {paper.doi}
+                        </a>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>{paper.year || "N/A"}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="text-sm text-gray-500 italic">No detailed paper information available</p>
+      )}
+    </div>
+  );
+}
+
 export default function NetworkGraph() {
   const [networkData, setNetworkData] = useState(() => createSampleResearcherNetwork());
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
@@ -262,6 +354,11 @@ export default function NetworkGraph() {
   const [scale, setScale] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [networkType, setNetworkType] = useState<'citation' | 'coauthor'>('citation');
+  const [hoveredLink, setHoveredLink] = useState<{
+    source: string | null, 
+    target: string | null, 
+    papers: PaperInfo[] | null
+  }>({ source: null, target: null, papers: null });
   
   const handleSelectNode = (id: string) => {
     setSelectedNodes(prev => 
@@ -269,6 +366,10 @@ export default function NetworkGraph() {
         ? prev.filter(nodeId => nodeId !== id) 
         : [...prev, id]
     );
+  };
+  
+  const handleHoverLink = (source: string | null, target: string | null, papers: PaperInfo[] | null) => {
+    setHoveredLink({ source, target, papers });
   };
   
   useEffect(() => {
@@ -516,8 +617,19 @@ export default function NetworkGraph() {
                   onSelectNode={handleSelectNode} 
                   highlightedNodes={selectedNodes}
                   scale={scale}
+                  onHoverLink={handleHoverLink}
                 />
               </Canvas>
+              
+              {hoveredLink.source && hoveredLink.target && hoveredLink.papers && (
+                <div className="absolute bottom-4 left-4 w-96 bg-white/95 backdrop-blur-sm p-4 rounded-md shadow-lg border border-gray-200 text-sm">
+                  <CitationPapersCard 
+                    source={hoveredLink.source} 
+                    target={hoveredLink.target}
+                    papers={hoveredLink.papers}
+                  />
+                </div>
+              )}
               
               <div className="absolute bottom-4 right-4 flex space-x-2">
                 <Button variant="outline" size="icon" className="bg-white" disabled={isLoading}>
@@ -538,7 +650,7 @@ export default function NetworkGraph() {
             <p>
               <span className="font-medium">How to use:</span> Click and drag to rotate, scroll to zoom, 
               click on researchers to select them. Lines represent {networkType === 'citation' ? 'citation' : 'collaboration'} relationships.
-              Arrows indicate citation direction.
+              Hover over connecting lines to see the papers that created the citation relationship.
             </p>
           </div>
         </div>
