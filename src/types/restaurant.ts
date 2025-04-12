@@ -12,6 +12,7 @@ export interface Dish {
   description: string;
   date: string;
   likes: number;
+  image?: string;
 }
 
 export interface Restaurant {
@@ -24,6 +25,12 @@ export interface Restaurant {
   members: Member[];
   dishes: Dish[];
   badges: string[];
+  location?: {
+    lat: number;
+    lng: number;
+    address: string;
+  };
+  storeImage: string;
 }
 
 export interface ApplicationForm {
@@ -33,3 +40,17 @@ export interface ApplicationForm {
   proficiency: "Beginner" | "Intermediate" | "Advanced" | "Master";
   reason: string;
 }
+
+export type ResearchTopic = 
+  | "Deep Learning" 
+  | "CNNs" 
+  | "Neuroimaging" 
+  | "NLP" 
+  | "LLMs" 
+  | "Transformers" 
+  | "Genomics"
+  | "Systems Biology" 
+  | "RNA-seq" 
+  | "Quantum Computing" 
+  | "Optimization"
+  | "Bioinformatics";

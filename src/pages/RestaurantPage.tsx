@@ -13,7 +13,7 @@ const RestaurantPage = () => {
       id: "1",
       name: "Neuro-Image Pizza",
       description: "Analyze neuroimaging data (CT, MRI, etc.) to detect diseases using machine learning.",
-      menu: ["Deep learning", "CNNs", "RNNs", "Transformers"],
+      menu: ["Deep Learning", "CNNs", "RNNs", "Transformers", "Neuroimaging"],
       kitchenExperience: ["Specializes in image analysis", "ML / AI background"],
       requirements: [
         "Basic knowledge of ML/DL",
@@ -34,13 +34,19 @@ const RestaurantPage = () => {
           likes: 27
         }
       ],
-      badges: ["3-star group"]
+      badges: ["3-star group"],
+      storeImage: "/lovable-uploads/400ab1bc-496a-498b-b85f-5941eff1e0ba.png",
+      location: {
+        lat: 37.4275,
+        lng: -122.1697,
+        address: "Stanford, CA, USA"
+      }
     },
     {
       id: "2",
       name: "Journal Club Bento",
       description: "Weekly discussions on the latest papers in computational biology and genomics.",
-      menu: ["Genomics", "Bioinformatics", "Systems Biology"],
+      menu: ["Genomics", "Bioinformatics", "Systems Biology", "RNA-seq"],
       kitchenExperience: ["Background in computational biology", "Experience in genomic data analysis"],
       requirements: [
         "Interest in computational biology",
@@ -60,7 +66,13 @@ const RestaurantPage = () => {
           likes: 15
         }
       ],
-      badges: []
+      badges: [],
+      storeImage: "/lovable-uploads/0da06b86-73bb-4edb-9242-faf3f3127c0f.png",
+      location: {
+        lat: 34.0689,
+        lng: -118.4452,
+        address: "Los Angeles, CA, USA"
+      }
     },
     {
       id: "3",
@@ -89,7 +101,78 @@ const RestaurantPage = () => {
           likes: 42
         }
       ],
-      badges: ["Michelin badge", "3-star group"]
+      badges: ["Michelin badge", "3-star group"],
+      storeImage: "/lovable-uploads/02a7c074-9fac-4371-b20d-bf3e19320493.png",
+      location: {
+        lat: 47.6553,
+        lng: -122.3035,
+        address: "Seattle, WA, USA"
+      }
+    },
+    {
+      id: "4",
+      name: "Quantum Soup Kitchen",
+      description: "Exploring quantum computing algorithms for optimization problems in various domains.",
+      menu: ["Quantum Computing", "Optimization", "Algorithms"],
+      kitchenExperience: ["Background in quantum physics", "Experience with quantum algorithms"],
+      requirements: [
+        "Basic knowledge of quantum mechanics",
+        "Interest in computational optimization",
+        "Programming experience"
+      ],
+      members: [
+        { id: "11", name: "Dr. Sophia Chen", role: "Chef", institution: "Caltech" },
+        { id: "12", name: "James Wilson", role: "Sous Chef", institution: "Princeton University" }
+      ],
+      dishes: [
+        {
+          id: "4",
+          title: "QAOA for Supply Chain Optimization",
+          description: "Implementation of Quantum Approximate Optimization Algorithm for solving complex supply chain problems.",
+          date: "February 2025",
+          likes: 31
+        }
+      ],
+      badges: [],
+      storeImage: "/lovable-uploads/400ab1bc-496a-498b-b85f-5941eff1e0ba.png",
+      location: {
+        lat: 34.1377,
+        lng: -118.1252,
+        address: "Pasadena, CA, USA"
+      }
+    },
+    {
+      id: "5",
+      name: "Genomics Grill",
+      description: "Analyzing genomic data to understand gene expression patterns and disease mechanisms.",
+      menu: ["Genomics", "Systems Biology", "RNA-seq", "Bioinformatics"],
+      kitchenExperience: ["Expertise in genomic analysis", "Experience with NGS data"],
+      requirements: [
+        "Background in molecular biology",
+        "Basic bioinformatics skills",
+        "Teamwork orientation"
+      ],
+      members: [
+        { id: "13", name: "Dr. Emma Roberts", role: "Chef", institution: "Johns Hopkins University" },
+        { id: "14", name: "Daniel Lee", role: "Sous Chef", institution: "University of Pennsylvania" },
+        { id: "15", name: "Rachel Kim", role: "Chef de Partie", institution: "Yale University" }
+      ],
+      dishes: [
+        {
+          id: "5",
+          title: "Multi-Omics Approach to Cancer Biomarker Discovery",
+          description: "Integration of transcriptomics, proteomics, and metabolomics data for comprehensive cancer biomarker identification.",
+          date: "March 2025",
+          likes: 24
+        }
+      ],
+      badges: ["3-star group"],
+      storeImage: "/lovable-uploads/0da06b86-73bb-4edb-9242-faf3f3127c0f.png",
+      location: {
+        lat: 39.2976,
+        lng: -76.5926,
+        address: "Baltimore, MD, USA"
+      }
     }
   ]);
 
@@ -101,18 +184,16 @@ const RestaurantPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Research Restaurants</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Research Restaurants</h1>
+          <p className="text-gray-600 mt-1">
+            Join a cozy research community where scholars collaborate like chefs in a kitchen.
+          </p>
+        </div>
         <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-research-purple hover:bg-research-light-purple">
           <Plus className="h-4 w-4 mr-2" />
           Open a Restaurant
         </Button>
-      </div>
-
-      <div className="mb-6">
-        <p className="text-gray-600">
-          Join a cozy research community where scholars collaborate like chefs in a kitchen.
-          Each restaurant represents a small research group led by a passionate researcher.
-        </p>
       </div>
 
       <RestaurantList restaurants={restaurants} />
