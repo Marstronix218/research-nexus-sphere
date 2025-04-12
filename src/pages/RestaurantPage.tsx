@@ -21,8 +21,8 @@ const RestaurantPage = () => {
         "Collaborative mindset"
       ],
       members: [
-        { id: "1", name: "Dr. Jennifer Lee", role: "Chef", institution: "Stanford University" },
-        { id: "2", name: "Mike Chen", role: "Sous Chef", institution: "MIT" },
+        { id: "1", name: "Dr. Sujin Lee", role: "Chef", institution: "Stanford University" },
+        { id: "2", name: "Maruaki Noriaki", role: "Sous Chef", institution: "MIT" },
         { id: "3", name: "Sarah Kim", role: "Chef de Partie", institution: "Harvard University" }
       ],
       dishes: [
@@ -54,8 +54,8 @@ const RestaurantPage = () => {
         "Regular attendance"
       ],
       members: [
-        { id: "4", name: "Dr. Alex Wong", role: "Chef", institution: "UCLA" },
-        { id: "5", name: "Emily Johnson", role: "Sous Chef", institution: "UC Berkeley" }
+        { id: "4", name: "Dr. Rebecca Park", role: "Chef", institution: "UCLA" },
+        { id: "5", name: "Mina Lim", role: "Sous Chef", institution: "UC Berkeley" }
       ],
       dishes: [
         {
@@ -86,11 +86,11 @@ const RestaurantPage = () => {
         "Interest in language models"
       ],
       members: [
-        { id: "6", name: "Dr. Robert Park", role: "Chef", institution: "University of Washington" },
-        { id: "7", name: "Lisa Chen", role: "Sous Chef", institution: "Carnegie Mellon" },
+        { id: "6", name: "Dr. Roberto Park", role: "Chef", institution: "University of Washington" },
+        { id: "7", name: "Sujin Lee Jr.", role: "Sous Chef", institution: "Carnegie Mellon" },
         { id: "8", name: "David Kim", role: "Chef de Partie", institution: "Georgia Tech" },
-        { id: "9", name: "Maria Garcia", role: "Commis", institution: "University of Toronto" },
-        { id: "10", name: "John Smith", role: "Commis", institution: "University of Michigan" }
+        { id: "9", name: "Bill Deng", role: "Commis", institution: "University of Toronto" },
+        { id: "10", name: "Asa Enami", role: "Commis", institution: "University of Michigan" }
       ],
       dishes: [
         {
@@ -122,7 +122,7 @@ const RestaurantPage = () => {
       ],
       members: [
         { id: "11", name: "Dr. Sophia Chen", role: "Chef", institution: "Caltech" },
-        { id: "12", name: "James Wilson", role: "Sous Chef", institution: "Princeton University" }
+        { id: "12", name: "Maruaki Seo", role: "Sous Chef", institution: "Princeton University" }
       ],
       dishes: [
         {
@@ -153,7 +153,7 @@ const RestaurantPage = () => {
         "Teamwork orientation"
       ],
       members: [
-        { id: "13", name: "Dr. Emma Roberts", role: "Chef", institution: "Johns Hopkins University" },
+        { id: "13", name: "Dr. Emma Lim", role: "Chef", institution: "Johns Hopkins University" },
         { id: "14", name: "Daniel Lee", role: "Sous Chef", institution: "University of Pennsylvania" },
         { id: "15", name: "Rachel Kim", role: "Chef de Partie", institution: "Yale University" }
       ],

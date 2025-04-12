@@ -35,7 +35,7 @@ const extendedResearchers: Researcher[] = [
   },
   {
     id: "r3",
-    name: "Maria Rodriguez",
+    name: "Maria Lee",
     institution: "University of Barcelona",
     location: "Barcelona, Spain",
     interests: ["Neuroscience", "Cognitive Computing", "AI Ethics"],
@@ -53,7 +53,7 @@ const extendedResearchers: Researcher[] = [
   },
   {
     id: "r5",
-    name: "Sara Ahmed",
+    name: "Sara Kim",
     institution: "University of Cairo",
     location: "Cairo, Egypt",
     interests: ["Computer Vision", "Pattern Recognition", "Medical Imaging"],
@@ -62,7 +62,7 @@ const extendedResearchers: Researcher[] = [
   },
   {
     id: "r6",
-    name: "Lukas Müller",
+    name: "Minseo Müller",
     institution: "ETH Zurich",
     location: "Zurich, Switzerland",
     interests: ["Quantum Computing", "Quantum Machine Learning", "Optimization"],
@@ -80,7 +80,7 @@ const extendedResearchers: Researcher[] = [
   },
   {
     id: "r8",
-    name: "James Wilson",
+    name: "Haerin Kang",
     institution: "University of Melbourne",
     location: "Melbourne, Australia",
     interests: ["Cybersecurity", "Network Science", "Blockchain"],
@@ -89,7 +89,7 @@ const extendedResearchers: Researcher[] = [
   },
   {
     id: "r9",
-    name: "Ana Silva",
+    name: "Ana Kim",
     institution: "University of São Paulo",
     location: "São Paulo, Brazil",
     interests: ["Data Mining", "Social Network Analysis", "Computational Social Science"],
@@ -98,7 +98,7 @@ const extendedResearchers: Researcher[] = [
   },
   {
     id: "r10",
-    name: "Emmanuel Osei",
+    name: "Alex Kishida",
     institution: "University of Ghana",
     location: "Accra, Ghana",
     interests: ["AI for Development", "Mobile Computing", "Educational Technology"],
