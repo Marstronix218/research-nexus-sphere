@@ -27,7 +27,7 @@ const feedItems = [
     title: "New Research Paper Published: Deep Learning for Climate Prediction",
     author: {
       id: "auth1",
-      name: "Dr. Emily Chen",
+      name: "Dr. Son Heung-min Jr.",
       avatar: "/placeholder.svg",
       institution: "Stanford University"
     },
@@ -45,7 +45,7 @@ const feedItems = [
     title: "Call for Papers: International Conference on AI Ethics",
     author: {
       id: "auth2",
-      name: "Dr. Michael Williams",
+      name: "Dr. Jung Min",
       avatar: "/placeholder.svg",
       institution: "MIT"
     },
@@ -63,7 +63,7 @@ const feedItems = [
     title: "Seeking Collaborators for Quantum Computing Project",
     author: {
       id: "auth3",
-      name: "Dr. Sarah Johnson",
+      name: "Dr. Uesaka Shinnosuke",
       avatar: "/placeholder.svg",
       institution: "Caltech"
     },
@@ -81,7 +81,7 @@ const feedItems = [
     title: "Upcoming Workshop: Advanced Research Methods in Bioinformatics",
     author: {
       id: "auth4",
-      name: "Dr. James Wilson",
+      name: "Dr. Hyunwoo Lee",
       avatar: "/placeholder.svg",
       institution: "Harvard Medical School"
     },
@@ -99,7 +99,7 @@ const feedItems = [
     title: "Research Team Receives Major Grant for Sustainable Energy Research",
     author: {
       id: "auth5",
-      name: "Dr. Lisa Rodriguez",
+      name: "Dr. Moonsup Kip",
       avatar: "/placeholder.svg",
       institution: "University of California, Berkeley"
     },
