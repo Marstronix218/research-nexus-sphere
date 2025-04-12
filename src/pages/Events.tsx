@@ -345,45 +345,57 @@ export default function Events() {
                   <Bell className="mr-2 h-5 w-5 text-research-purple" />
                   Events You Might Be Interested In
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-6">
                   {upcomingEventsList.map(event => (
-                    <Card key={event.id} className="hover:shadow-lg transition-shadow">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-lg">{event.title}</CardTitle>
-                        <CardDescription className="flex items-center gap-1 mt-1">
-                          <Calendar className="h-4 w-4" />
-                          {formatDate(event.date)}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
-                          <MapPin className="h-4 w-4" />
-                          {event.location}
+                    <div 
+                      key={event.id} 
+                      className="bg-white rounded-lg shadow overflow-hidden"
+                    >
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                          {event.title}
+                        </h3>
+                        
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {formatDate(event.date)}
+                          </Badge>
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {event.location}
+                          </Badge>
+                          <Badge variant="secondary">
+                            {event.location.includes("Virtual") ? "Virtual" : "In-Person"}
+                          </Badge>
                         </div>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-                          <Users className="h-4 w-4" />
-                          Organized by: {event.organizer}
+                        
+                        <p className="text-gray-600 mb-4">{event.description}</p>
+                        
+                        <div className="mt-2 flex items-center justify-between">
+                          <p className="text-sm text-gray-500">
+                            <Users className="inline h-4 w-4 mr-1" />
+                            Organized by: {event.organizer}
+                          </p>
+                          
+                          <a
+                            href={event.registerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-research-purple hover:text-research-light-purple text-sm font-medium flex items-center"
+                          >
+                            Register Now
+                            <ExternalLink className="ml-1 h-3 w-3" />
+                          </a>
                         </div>
-                        <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>
-                      </CardContent>
-                      <CardFooter className="pt-1">
-                        <a
-                          href={event.registerUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-research-purple hover:text-research-light-purple text-sm font-medium flex items-center"
-                        >
-                          Register Now
-                          <ExternalLink className="ml-1 h-3 w-3" />
-                        </a>
-                      </CardFooter>
-                    </Card>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
 
-              {filteredUpcomingEvents.length > 0 ? (
-                filteredUpcomingEvents.map(event => (
+              <div className="space-y-6">
+                {filteredUpcomingEvents.map(event => (
                   <div 
                     key={event.id} 
                     className={`bg-white rounded-lg shadow overflow-hidden ${event.isFeatured ? 'border border-research-purple' : ''}`}
@@ -466,23 +478,8 @@ export default function Events() {
                       </Button>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="bg-white rounded-lg shadow p-8 text-center">
-                  <Calendar className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-xl font-medium text-gray-700 mb-2">No Upcoming Events Found</h3>
-                  <p className="text-gray-500">
-                    There are no upcoming events matching your filter criteria.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="mt-4" 
-                    onClick={resetFilters}
-                  >
-                    Reset Filters
-                  </Button>
-                </div>
-              )}
+                ))}
+              </div>
             </TabsContent>
             
             <TabsContent value="past" className="space-y-6">
