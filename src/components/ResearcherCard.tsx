@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Researcher } from "@/data/mockData";
 import { ExternalLink, Users } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface ResearcherCardProps {
   researcher: Researcher;
@@ -12,14 +13,30 @@ interface ResearcherCardProps {
 }
 
 export default function ResearcherCard({ researcher, showActions = true }: ResearcherCardProps) {
+  // Profile image URLs for researchers without avatars
+  const profileImages = [
+    "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1",
+    "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9",
+    "https://images.unsplash.com/photo-1485833077593-4278bba3f11f"
+  ];
+  
+  // Get a consistent image for the same researcher
+  const getAvatarImage = (id: string) => {
+    const hashCode = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return profileImages[hashCode % profileImages.length];
+  };
+
   return (
     <Card className="h-full hover:shadow-md transition-shadow">
       <CardHeader className="flex flex-row items-center gap-4 p-4">
-        <img
-          src={researcher.avatar}
-          alt={researcher.name}
-          className="rounded-full w-12 h-12 object-cover border-2 border-gray-100"
-        />
+        <Avatar className="w-12 h-12 border-2 border-gray-100">
+          <AvatarImage
+            src={researcher.avatar || getAvatarImage(researcher.id)}
+            alt={researcher.name}
+          />
+          <AvatarFallback>{researcher.name.charAt(0)}</AvatarFallback>
+        </Avatar>
         <div>
           <h3 className="font-semibold text-lg">{researcher.name}</h3>
           <p className="text-sm text-gray-500">{researcher.institution}</p>

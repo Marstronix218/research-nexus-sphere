@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Calendar, 
@@ -237,49 +236,6 @@ export default function Events() {
         </p>
       </div>
       
-      {/* Featured Upcoming Events Section */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold text-research-blue mb-4 flex items-center">
-          <Bell className="mr-2 h-5 w-5 text-research-purple" />
-          Upcoming Events You Might Be Interested In
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {upcomingEventsList.map(event => (
-            <Card key={event.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{event.title}</CardTitle>
-                <CardDescription className="flex items-center gap-1 mt-1">
-                  <Calendar className="h-4 w-4" />
-                  {formatDate(event.date)}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
-                  <MapPin className="h-4 w-4" />
-                  {event.location}
-                </div>
-                <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-                  <Users className="h-4 w-4" />
-                  Organized by: {event.organizer}
-                </div>
-                <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>
-              </CardContent>
-              <CardFooter className="pt-1">
-                <a
-                  href={event.registerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-research-purple hover:text-research-light-purple text-sm font-medium flex items-center"
-                >
-                  Register Now
-                  <ExternalLink className="ml-1 h-3 w-3" />
-                </a>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-      </div>
-      
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/4 space-y-6">
           <div className="bg-white rounded-lg shadow p-4">
@@ -375,7 +331,7 @@ export default function Events() {
             <TabsList className="mb-6">
               <TabsTrigger value="upcoming" className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
-                Upcoming Events ({filteredUpcomingEvents.length})
+                Upcoming Events ({filteredUpcomingEvents.length + upcomingEventsList.length})
               </TabsTrigger>
               <TabsTrigger value="past" className="flex items-center">
                 <Clock className="h-4 w-4 mr-2" />
@@ -384,6 +340,48 @@ export default function Events() {
             </TabsList>
             
             <TabsContent value="upcoming" className="space-y-6">
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-research-blue mb-4 flex items-center">
+                  <Bell className="mr-2 h-5 w-5 text-research-purple" />
+                  Events You Might Be Interested In
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {upcomingEventsList.map(event => (
+                    <Card key={event.id} className="hover:shadow-lg transition-shadow">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg">{event.title}</CardTitle>
+                        <CardDescription className="flex items-center gap-1 mt-1">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(event.date)}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
+                          <MapPin className="h-4 w-4" />
+                          {event.location}
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
+                          <Users className="h-4 w-4" />
+                          Organized by: {event.organizer}
+                        </div>
+                        <p className="text-sm text-gray-700 line-clamp-3">{event.description}</p>
+                      </CardContent>
+                      <CardFooter className="pt-1">
+                        <a
+                          href={event.registerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-research-purple hover:text-research-light-purple text-sm font-medium flex items-center"
+                        >
+                          Register Now
+                          <ExternalLink className="ml-1 h-3 w-3" />
+                        </a>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
               {filteredUpcomingEvents.length > 0 ? (
                 filteredUpcomingEvents.map(event => (
                   <div 
