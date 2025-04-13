@@ -1,4 +1,3 @@
-
 export interface Researcher {
   id: string;
   name: string;
@@ -231,7 +230,7 @@ export const createNetworkData = () => {
   const nodes: Node[] = researchers.map(r => ({
     id: r.id,
     name: r.name,
-    val: Math.sqrt(r.citations) / 5, // Scale node size based on citations
+    val: Math.sqrt(r.citations) / 3, // Increased from /5 to /3 to make nodes bigger
   }));
 
   const links: Link[] = [];
