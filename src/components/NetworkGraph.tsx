@@ -60,8 +60,8 @@ function NodeObject({
   });
   
   const nodeType = (node as any).type || 'default';
-  const baseSize = 0.3;
-  const scaleFactor = isSelected ? 1.3 : isHovered ? 1.2 : 1;
+  const baseSize = 0.5;
+  const scaleFactor = isSelected ? 1.5 : isHovered ? 1.4 : 1;
   const nodeValue = node.val || 1;
   const cappedNodeValue = Math.min(nodeValue, 2);
   const finalScale = scale * scaleFactor * baseSize * Math.sqrt(cappedNodeValue);
