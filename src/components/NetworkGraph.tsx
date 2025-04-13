@@ -183,7 +183,7 @@ function LinkObject({
       
       {isDirectional && isHighlighted && (
         <mesh position={[arrowPosition.x, arrowPosition.y, arrowPosition.z]}>
-          <coneGeometry args={[0.05, 0.15, 8]} />
+          <coneGeometry args={[0.1, 0.3, 8]} />
           <meshBasicMaterial color={lineColor} transparent opacity={0.8} />
         </mesh>
       )}
